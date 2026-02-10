@@ -13,26 +13,58 @@
             min-height: 100vh;
             color: #fff;
             direction: rtl;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                url('https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1920&q=60') center/cover no-repeat;
+            opacity: 0.12;
+            z-index: -1;
         }
 
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
 
         header {
             text-align: center;
-            padding: 30px 0;
-            background: rgba(255,255,255,0.1);
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(44,62,80,0.9) 0%, rgba(52,73,94,0.85) 100%);
             border-radius: 20px;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(247,215,148,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        header::after {
+            content: '📖✡️📜';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            opacity: 0.15;
+            letter-spacing: 20px;
         }
 
         h1 {
             font-size: 2.5em;
-            background: linear-gradient(45deg, #f7d794, #f5cd79);
+            background: linear-gradient(45deg, #f7d794, #f5cd79, #e8b84b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
+            text-shadow: none;
+            position: relative;
+        }
+        .subtitle {
+            color: #82ccdd;
+            font-size: 1.1em;
+            margin-top: 5px;
+            opacity: 0.9;
         }
 
         .score-display { font-size: 1.3em; color: #82ccdd; }
@@ -41,9 +73,11 @@
         #login-screen {
             text-align: center;
             padding: 50px 30px;
-            background: rgba(255,255,255,0.1);
+            background: linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(247,215,148,0.08) 100%);
             border-radius: 20px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(247,215,148,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
         #login-screen h2 { margin-bottom: 30px; color: #f7d794; }
@@ -88,13 +122,19 @@
         .btn-danger:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(229, 80, 57, 0.4); }
 
         .question-card {
-            background: rgba(255,255,255,0.1);
+            background: linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(130,204,221,0.06) 100%);
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 1px solid rgba(130,204,221,0.15);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .question-card:hover {
+            border-color: rgba(247,215,148,0.3);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
         }
 
         .question-card:hover { border-color: rgba(247, 215, 148, 0.3); }
@@ -115,15 +155,15 @@
 
         .option {
             padding: 15px 25px;
-            background: rgba(255,255,255,0.1);
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%);
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 2px solid rgba(255,255,255,0.1);
             font-size: 1.1em;
         }
 
-        .option:hover { background: rgba(255,255,255,0.2); border-color: #82ccdd; }
+        .option:hover { background: linear-gradient(135deg, rgba(130,204,221,0.2) 0%, rgba(130,204,221,0.1) 100%); border-color: #82ccdd; transform: translateX(-3px); }
         .option.selected { border-color: #f7d794; background: rgba(247, 215, 148, 0.2); }
         .option.correct { border-color: #78e08f; background: rgba(120, 224, 143, 0.3); animation: correctPulse 0.5s ease; }
         .option.wrong { border-color: #e55039; background: rgba(229, 80, 57, 0.3); animation: shake 0.5s ease; }
@@ -736,7 +776,7 @@
     <div class="container" role="main" aria-label="תוכן ראשי">
         <header role="banner">
             <h1>📚 מקבץ (כמעט) 1,000 שאלות</h1>
-            <p style="color: #82ccdd; margin-bottom: 10px;">שאלות בתנ"ך</p>
+            <p class="subtitle">✡️ שאלות בתנ"ך • ברוח חידון התנ"ך הארצי ✡️</p>
             <div class="score-display" id="score-display" style="display: none;">
                 ניקוד: <span class="score-value" id="score">0</span>
                 <div class="progress-container">
@@ -747,9 +787,9 @@
 
         <div id="login-screen">
             <div class="preview-section">
-                <h3>✨ צפייה חינמית</h3>
-                <p>נסה את המערכת - 45 שניות צפייה חופשית!</p>
-                <button class="btn btn-secondary" onclick="startPreview()">התחל צפייה חינמית</button>
+                <h3>✨ נסו בחינם!</h3>
+                <p>45 שניות צפייה חופשית - טעימה מחידון התנ"ך</p>
+                <button class="btn btn-secondary" onclick="startPreview()">🏆 התחל צפייה חינמית</button>
             </div>
             <h2>🔐 כניסה עם קוד גישה</h2>
             <p style="margin-bottom: 20px; color: #82ccdd;">הכנס את קוד הגישה לצפייה בכל השאלות</p>
