@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מקבץ (כמעט) 1,000 שאלות - שאלות בתנ"ך</title>
+    <title>מקבץ 856 שאלות בתנ"ך - חידון התנ"ך</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -14,11 +14,11 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-            background: linear-gradient(135deg, #1a0a2e 0%, #0d1b3e 25%, #1a2a4a 50%, #2a1a3e 75%, #1a0a2e 100%);
+            background: linear-gradient(135deg, #faf6ed 0%, #f0e6d0 25%, #faf6ed 50%, #e8dcc8 75%, #faf6ed 100%);
             background-size: 400% 400%;
-            animation: bgShift 20s ease infinite;
+            animation: bgShift 30s ease infinite;
             min-height: 100vh;
-            color: #fff;
+            color: #2c1810;
             direction: rtl;
             position: relative;
         }
@@ -27,7 +27,7 @@
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             font-size: 60px;
-            color: rgba(212,175,55,0.04);
+            color: rgba(160,120,40,0.04);
             word-spacing: 80px;
             line-height: 120px;
             overflow: hidden;
@@ -39,9 +39,8 @@
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background:
-                radial-gradient(ellipse at 20% 20%, rgba(212,175,55,0.2) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(212,175,55,0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(100,80,200,0.1) 0%, transparent 40%);
+                radial-gradient(ellipse at 20% 20%, rgba(212,175,55,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(160,120,40,0.06) 0%, transparent 50%);
             z-index: -1;
             pointer-events: none;
         }
@@ -55,7 +54,7 @@
             border-radius: 24px;
             margin-bottom: 30px;
             border: 3px solid #d4af37;
-            box-shadow: 0 0 30px rgba(212,175,55,0.3), 0 10px 50px rgba(0,0,0,0.5), inset 0 0 60px rgba(212,175,55,0.05);
+            box-shadow: 0 0 20px rgba(212,175,55,0.2), 0 8px 30px rgba(0,0,0,0.15);
             position: relative;
             overflow: hidden;
         }
@@ -101,15 +100,15 @@
         .score-display { font-size: 1.3em; color: #d4af37; }
         .score-value { font-weight: bold; color: #78e08f; font-size: 1.5em; }
 
-        .version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 0.7em; color: rgba(212,175,55,0.4); z-index: 999; }
+        .version-tag { position: fixed; bottom: 5px; right: 5px; font-size: 0.7em; color: rgba(160,120,40,0.3); z-index: 999; }
 
         #login-screen {
             text-align: center;
             padding: 60px 40px;
-            background: linear-gradient(145deg, #1a0a2e 0%, #2a1548 50%, #0d1b3e 100%);
+            background: #fff;
             border-radius: 24px;
             border: 2px solid #d4af37;
-            box-shadow: 0 0 40px rgba(212,175,55,0.2), 0 20px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 20px rgba(160,120,40,0.15);
             position: relative;
             overflow: hidden;
         }
@@ -132,18 +131,18 @@
             transform: rotate(15deg);
         }
 
-        #login-screen h2 { margin-bottom: 30px; color: #d4af37; font-size: 1.6em; }
+        #login-screen h2 { margin-bottom: 30px; color: #8b6914; font-size: 1.6em; }
 
         .preview-section {
             margin-bottom: 40px;
             padding: 30px;
-            background: linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(212,175,55,0.05) 100%);
+            background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.03) 100%);
             border-radius: 16px;
             border: 2px solid #d4af37;
-            animation: glow 3s ease infinite;
         }
 
-        .preview-section h3 { color: #d4af37; margin-bottom: 15px; font-size: 1.4em; }
+        .preview-section h3 { color: #8b6914; margin-bottom: 15px; font-size: 1.4em; }
+        .preview-section p { color: #5a4510; }
 
         #code-input {
             padding: 15px 25px;
@@ -179,17 +178,17 @@
         .btn-danger:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(229, 80, 57, 0.4); }
 
         .question-card {
-            background: linear-gradient(145deg, rgba(42,21,72,0.8) 0%, rgba(26,10,46,0.9) 100%);
+            background: #fff;
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 20px;
             transition: all 0.3s ease;
-            border: 1px solid rgba(212,175,55,0.2);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(160,120,40,0.2);
+            box-shadow: 0 2px 12px rgba(160,120,40,0.08);
         }
         .question-card:hover {
             border-color: #d4af37;
-            box-shadow: 0 6px 30px rgba(212,175,55,0.2);
+            box-shadow: 0 4px 20px rgba(160,120,40,0.15);
             transform: translateY(-2px);
         }
         .question-card.locked { opacity: 0.5; filter: blur(3px); pointer-events: none; }
@@ -205,51 +204,52 @@
             box-shadow: 0 2px 10px rgba(212,175,55,0.3);
         }
 
-        .question-text { font-size: 1.3em; line-height: 1.8; margin-bottom: 20px; color: #fff; }
+        .question-text { font-size: 1.3em; line-height: 1.8; margin-bottom: 20px; color: #2c1810; }
         .options { display: flex; flex-direction: column; gap: 12px; }
 
         .option {
             padding: 15px 25px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%);
+            background: #faf6ed;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid rgba(255,255,255,0.1);
+            border: 2px solid rgba(160,120,40,0.15);
             font-size: 1.1em;
+            color: #2c1810;
         }
 
-        .option:hover { background: linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.05) 100%); border-color: #d4af37; transform: translateX(-3px); }
-        .option.selected { border-color: #d4af37; background: rgba(212, 175, 55, 0.2); }
-        .option.correct { border-color: #78e08f; background: rgba(120, 224, 143, 0.3); animation: correctPulse 0.5s ease; }
-        .option.wrong { border-color: #e55039; background: rgba(229, 80, 57, 0.3); animation: shake 0.5s ease; }
+        .option:hover { background: rgba(212,175,55,0.1); border-color: #d4af37; transform: translateX(-3px); }
+        .option.selected { border-color: #d4af37; background: rgba(212, 175, 55, 0.15); }
+        .option.correct { border-color: #22c55e; background: rgba(34, 197, 94, 0.15); animation: correctPulse 0.5s ease; }
+        .option.wrong { border-color: #e55039; background: rgba(229, 80, 57, 0.15); animation: shake 0.5s ease; }
         .option.disabled { pointer-events: none; opacity: 0.7; }
 
         .open-answer {
             width: 100%;
             padding: 15px;
             font-size: 1.1em;
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid rgba(160,120,40,0.2);
             border-radius: 12px;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+            background: #faf6ed;
+            color: #2c1810;
             margin-bottom: 15px;
         }
 
-        .answer-link { display: inline-block; margin-top: 15px; color: #82ccdd; text-decoration: none; font-size: 1em; transition: all 0.3s ease; }
-        .answer-link:hover { color: #f7d794; }
+        .answer-link { display: inline-block; margin-top: 15px; color: #8b6914; text-decoration: none; font-size: 1em; transition: all 0.3s ease; }
+        .answer-link:hover { color: #d4af37; }
 
-        #answers-section { margin-top: 50px; padding-top: 30px; border-top: 3px solid rgba(247, 215, 148, 0.3); }
-        #answers-section h2 { text-align: center; color: #f7d794; margin-bottom: 30px; }
+        #answers-section { margin-top: 50px; padding-top: 30px; border-top: 3px solid rgba(160,120,40,0.2); }
+        #answers-section h2 { text-align: center; color: #8b6914; margin-bottom: 30px; }
 
         .answer-card {
-            background: rgba(120, 224, 143, 0.1);
+            background: rgba(34,197,94,0.06);
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 15px;
-            border-right: 5px solid #78e08f;
+            border-right: 5px solid #22c55e;
         }
 
-        .back-link { display: inline-block; margin-top: 10px; color: #f7d794; text-decoration: none; }
+        .back-link { display: inline-block; margin-top: 10px; color: #8b6914; text-decoration: none; }
 
         @keyframes correctPulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
@@ -280,7 +280,8 @@
         .nav-bar {
             position: sticky;
             top: 0;
-            background: linear-gradient(135deg, rgba(26,10,46,0.97) 0%, rgba(13,27,62,0.97) 100%);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
             padding: 15px;
             border-radius: 0 0 15px 15px;
             margin-bottom: 20px;
@@ -291,17 +292,19 @@
             flex-wrap: wrap;
             gap: 10px;
             border-bottom: 2px solid rgba(212,175,55,0.3);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .search-box {
             padding: 10px 15px;
             border-radius: 8px;
-            border: 1px solid rgba(212,175,55,0.3);
-            background: rgba(212,175,55,0.08);
-            color: #fff;
+            border: 1px solid rgba(160,120,40,0.2);
+            background: #faf6ed;
+            color: #2c1810;
             width: 200px;
         }
         .search-box:focus { border-color: #d4af37; outline: none; }
+        .search-box::placeholder { color: #a09070; }
 
         .upload-section {
             margin-top: 30px;
@@ -330,25 +333,26 @@
         .progress-bar { height: 100%; background: linear-gradient(45deg, #d4af37, #f7d794); border-radius: 5px; transition: width 0.3s ease; }
 
         .filter-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .filter-tab { padding: 10px 20px; background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.2); border-radius: 20px; cursor: pointer; transition: all 0.3s ease; color: #d4af37; }
-        .filter-tab:hover { background: rgba(212,175,55,0.2); }
-        .filter-tab.active { background: linear-gradient(45deg, #d4af37, #f7d794); color: #1a0a2e; font-weight: bold; }
+        .filter-tab { padding: 10px 20px; background: #fff; border: 1px solid rgba(160,120,40,0.2); border-radius: 20px; cursor: pointer; transition: all 0.3s ease; color: #5a4510; }
+        .filter-tab:hover { background: rgba(212,175,55,0.1); border-color: #d4af37; }
+        .filter-tab.active { background: linear-gradient(45deg, #d4af37, #f7d794); color: #1a0a2e; font-weight: bold; border-color: #d4af37; }
 
         .stats-bar {
             display: flex;
             justify-content: space-around;
             padding: 15px;
-            background: linear-gradient(135deg, rgba(42,21,72,0.6) 0%, rgba(26,10,46,0.7) 100%);
+            background: #fff;
             border-radius: 12px;
             margin-bottom: 20px;
-            border: 1px solid rgba(212,175,55,0.2);
+            border: 1px solid rgba(160,120,40,0.15);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .stat-item { text-align: center; }
-        .stat-value { font-size: 1.5em; font-weight: bold; color: #d4af37; }
-        .stat-label { font-size: 0.9em; color: rgba(212,175,55,0.7); }
+        .stat-value { font-size: 1.5em; font-weight: bold; color: #8b6914; }
+        .stat-label { font-size: 0.9em; color: #7a6530; }
 
-        .source-text { margin-top: 10px; font-size: 0.9em; color: #82ccdd; font-style: italic; }
+        .source-text { margin-top: 10px; font-size: 0.9em; color: #7a6530; font-style: italic; }
 
         /* Preview Timer Banner */
         .preview-banner {
@@ -810,7 +814,7 @@
     <!-- Payment Overlay -->
     <div class="payment-overlay" id="payment-overlay" aria-hidden="true">
         <div class="payment-card" role="dialog" aria-modal="true" aria-label="חלון תשלום">
-            <h2>📚 מקבץ (כמעט) 1,000 שאלות - גישה מלאה</h2>
+            <h2>📚 מקבץ 856 שאלות בתנ"ך - גישה מלאה</h2>
             <p style="color: #82ccdd; margin-bottom: 10px;">שאלות בתנ"ך - הכנה מושלמת למבחן</p>
             <div class="price">₪14.90</div>
             <p class="price-note">תשלום חד-פעמי • גישה ללא הגבלה</p>
@@ -822,15 +826,11 @@
                 <li>גישה ללא הגבלת זמן</li>
             </ul>
             <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
-                <a href="https://payboxapp.page.link/avitzur" target="_blank" class="btn-pay" id="pay-button" style="width:90%; max-width:350px;">💳 שלם ₪14.90 בPayBox</a>
-                <a href="https://wa.me/972526953500?text=%D7%A9%D7%9C%D7%9E%D7%AA%D7%99%20%D7%A2%D7%9C%20%D7%9E%D7%A7%D7%91%D7%A5%20%D7%94%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%91%D7%AA%D7%A0%22%D7%9A%20-%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%9C%D7%A9%D7%9C%D7%9D" target="_blank" style="display:inline-block; padding:14px 35px; background:#25D366; color:#fff; border-radius:12px; text-decoration:none; font-size:1.1em; font-weight:bold; width:90%; max-width:350px; text-align:center;">💬 שלח הודעה בוואטסאפ</a>
+                <a href="https://www.bitpay.co.il/app/link/pay?amount=14.90&phone=0526953500&name=%D7%9E%D7%A7%D7%91%D7%A5%20%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%91%D7%AA%D7%A0%D7%9A" target="_blank" class="btn-pay" id="pay-button" style="width:90%; max-width:350px; background:linear-gradient(45deg,#1A6AE0,#3B82F6);">📱 שלם ₪14.90 בביט</a>
+                <a href="https://payboxapp.page.link/KVj2h6SQn5t9BGWZ7" target="_blank" style="display:inline-block; padding:14px 35px; background:linear-gradient(45deg,#00C853,#4CAF50); color:#fff; border-radius:12px; text-decoration:none; font-size:1.1em; font-weight:bold; width:90%; max-width:350px; text-align:center;">💳 שלם ₪14.90 בPayBox</a>
+                <a href="https://wa.me/972526953500?text=%D7%A9%D7%9C%D7%9E%D7%AA%D7%99%20%D7%A2%D7%9C%20%D7%9E%D7%A7%D7%91%D7%A5%20856%20%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%91%D7%AA%D7%A0%22%D7%9A%20-%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%9C%D7%A9%D7%9C%D7%9D" target="_blank" style="display:inline-block; padding:14px 35px; background:#25D366; color:#fff; border-radius:12px; text-decoration:none; font-size:1.1em; font-weight:bold; width:90%; max-width:350px; text-align:center;">💬 שלח הודעה בוואטסאפ</a>
             </div>
-            <div style="margin-top:18px; padding:15px; background:rgba(212,175,55,0.1); border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
-                <p style="color:#d4af37; font-size:1em; margin-bottom:8px; font-weight:bold;">📱 תשלום בביט:</p>
-                <p style="color:#fff; font-size:1.2em;">העבר <strong style="color:#78e08f;">₪14.90</strong> בביט למספר</p>
-                <p style="color:#d4af37; font-size:1.6em; font-weight:bold; direction:ltr; unicode-bidi:embed; margin:8px 0;">052-6953500</p>
-                <p style="color:rgba(255,255,255,0.6); font-size:0.85em;">לאחר התשלום שלח הודעה בוואטסאפ וקבל קוד גישה מיידי</p>
-            </div>
+            <p style="color:rgba(255,255,255,0.5); margin-top:15px; font-size:0.9em;">העבר ₪14.90 בביט/PayBox למספר <span style="color:#f7d794; direction:ltr; unicode-bidi:embed; font-weight:bold;">052-6953500</span> ושלח הודעה בוואטסאפ לקבלת קוד גישה</p>
             <div class="payment-code-section">
                 <p style="color: #82ccdd; margin-bottom: 10px; font-size: 0.95em;">כבר שילמת? הכנס קוד גישה:</p>
                 <label for="overlay-code-input" class="sr-only">קוד גישה</label>
@@ -843,7 +843,7 @@
 
     <div class="container" role="main" aria-label="תוכן ראשי">
         <header role="banner">
-            <h1>📚 מקבץ (כמעט) 1,000 שאלות</h1>
+            <h1>📚 מקבץ 856 שאלות בתנ"ך</h1>
             <p class="subtitle">✡ שאלות בתנ"ך • ברוח חידון התנ"ך הארצי ✡</p>
             <div class="score-display" id="score-display" style="display: none;">
                 ניקוד: <span class="score-value" id="score">0</span>
