@@ -352,17 +352,19 @@
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(90deg, #e55039, #b33939);
+            background: linear-gradient(90deg, #e55039, #d63031, #b33939);
             color: #fff;
-            padding: 10px 20px;
+            padding: 15px 20px;
             text-align: center;
-            z-index: 200;
-            font-size: 1.1em;
+            z-index: 9000;
+            font-size: 1.4em;
             font-weight: bold;
             display: none;
+            box-shadow: 0 4px 20px rgba(229,80,57,0.6);
+            border-bottom: 3px solid #f7d794;
         }
 
-        .preview-banner .timer-text { animation: timerPulse 1s infinite; }
+        .preview-banner .timer-text { animation: timerPulse 1s infinite; font-size: 1.5em; }
 
         /* Payment Overlay */
         .payment-overlay {
@@ -1123,18 +1125,28 @@
         }
 
         function startPreview() {
-            isPreviewMode = true;
-            hasFullAccess = false;
-            startQuiz();
-            startPreviewTimer();
+            try {
+                isPreviewMode = true;
+                hasFullAccess = false;
+                startQuiz();
+                startPreviewTimer();
+            } catch(e) {
+                alert('שגיאה: ' + e.message);
+                console.error('startPreview error:', e);
+            }
         }
 
         function startPreviewTimer() {
             previewSecondsLeft = PREVIEW_SECONDS;
             const banner = document.getElementById('preview-banner');
             const timerEl = document.getElementById('preview-timer');
-            banner.style.display = 'block';
-            document.body.style.paddingTop = '50px';
+            if (!banner || !timerEl) {
+                alert('שגיאה: רכיב הטיימר לא נמצא');
+                return;
+            }
+            banner.style.cssText = 'display:block !important; position:fixed; top:0; left:0; right:0; z-index:9000; background:linear-gradient(90deg,#e55039,#d63031,#b33939); color:#fff; padding:15px 20px; text-align:center; font-size:1.4em; font-weight:bold; box-shadow:0 4px 20px rgba(229,80,57,0.6); border-bottom:3px solid #f7d794;';
+            document.body.style.paddingTop = '60px';
+            timerEl.textContent = previewSecondsLeft;
 
             previewTimer = setInterval(() => {
                 previewSecondsLeft--;
@@ -1143,7 +1155,7 @@
 
                 if (previewSecondsLeft <= 10) {
                     banner.style.background = 'linear-gradient(90deg, #b33939, #e55039)';
-                    timerEl.style.fontSize = '1.3em';
+                    timerEl.style.fontSize = '1.8em';
                 }
 
                 if (previewSecondsLeft <= 0) {
