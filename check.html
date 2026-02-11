@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>בדיקת גרסה</title>
+    <style>
+        body {
+            background: #d4af37;
+            color: #1a0a2e;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            direction: rtl;
+            text-align: center;
+        }
+        .box {
+            background: white;
+            padding: 60px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+        }
+        h1 { font-size: 3em; margin-bottom: 20px; }
+        p { font-size: 1.5em; margin: 15px 0; }
+        .green { color: #22c55e; font-weight: bold; font-size: 2em; }
+        a { display: inline-block; margin-top: 30px; padding: 20px 50px; background: #1a0a2e; color: #d4af37; text-decoration: none; border-radius: 15px; font-size: 1.3em; font-weight: bold; }
+        a:hover { background: #2a1548; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🔍 בדיקת גרסה</h1>
+        <p class="green">✅ אם אתה רואה את הדף הזה - הפריסה עובדת!</p>
+        <p>גרסה: <strong>2.1</strong></p>
+        <p>תאריך: <strong>11.02.2026</strong></p>
+        <p>רקע זהב = גרסה חדשה</p>
+        <a href="./index.html" onclick="clearAndGo(event)">🚀 עבור לחידון (גרסה חדשה)</a>
+        <script>
+            function clearAndGo(e) {
+                e.preventDefault();
+                localStorage.clear();
+                // Force bypass cache
+                window.location.href = './index.html?nocache=' + Date.now();
+            }
+        </script>
+    </div>
+</body>
+</html>
