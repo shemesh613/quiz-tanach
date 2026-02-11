@@ -1125,16 +1125,10 @@
         }
 
         function startPreview() {
-            try {
-                isPreviewMode = true;
-                hasFullAccess = false;
-            } catch(e) { alert('ERR1: ' + e.message + ' | ' + e.stack); return; }
-            try {
-                startQuiz();
-            } catch(e) { alert('ERR2-startQuiz: ' + e.message + ' | line: ' + e.stack); return; }
-            try {
-                startPreviewTimer();
-            } catch(e) { alert('ERR3-timer: ' + e.message + ' | line: ' + e.stack); return; }
+            isPreviewMode = true;
+            hasFullAccess = false;
+            startQuiz();
+            startPreviewTimer();
         }
 
         function startPreviewTimer() {
@@ -1174,7 +1168,8 @@
             overlay.style.display = 'block'; overlay.setAttribute('aria-hidden', 'false');
             setTimeout(function(){ trapFocus(overlay); }, 100);
             document.getElementById('payment-q-count').textContent = 'גישה ל-' + questions.length + ' שאלות';
-            document.getElementById('payment-title-count').textContent = questions.length;
+            var ptc = document.getElementById('payment-title-count');
+            if (ptc) ptc.textContent = questions.length;
             document.body.style.overflow = 'hidden';
         }
 
@@ -1206,9 +1201,9 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('quiz-area').style.display = 'block';
             document.getElementById('score-display').style.display = 'block';
-            try { loadProgress(); } catch(e) { alert('ERR-loadProgress: ' + e.message); }
-            try { renderAll(); } catch(e) { alert('ERR-renderAll: ' + e.message + ' | ' + e.stack); }
-            try { updateAdminBadge(); } catch(e) { alert('ERR-adminBadge: ' + e.message); }
+            loadProgress();
+            renderAll();
+            updateAdminBadge();
         }
 
         function renderAll() {
@@ -1293,7 +1288,8 @@
             });
 
             document.getElementById('total-questions').textContent = questions.length;
-            document.getElementById('header-q-count').textContent = questions.length;
+            var hqc = document.getElementById('header-q-count');
+            if (hqc) hqc.textContent = questions.length;
         }
 
         function renderAnswers() {
