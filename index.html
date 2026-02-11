@@ -14,9 +14,7 @@
 
         body {
             font-family: 'Heebo', 'Segoe UI', Tahoma, Arial, sans-serif;
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0a1628 50%, #1a1a0a 75%, #0a0a1a 100%);
-            background-size: 400% 400%;
-            animation: bgShift 20s ease infinite;
+            background: #0c1222;
             min-height: 100vh;
             color: #fff;
             direction: rtl;
@@ -27,16 +25,18 @@
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background:
-                radial-gradient(ellipse at 20% 50%, rgba(212,175,55,0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(59,130,246,0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(168,85,247,0.05) 0%, transparent 50%);
-            z-index: -1;
+                linear-gradient(135deg, rgba(12,18,34,0.7) 0%, rgba(12,18,34,0.4) 100%),
+                url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Gutenberg_Bible%2C_Lenox_Copy%2C_New_York_Public_Library%2C_2009._Pic_01.jpg/1280px-Gutenberg_Bible%2C_Lenox_Copy%2C_New_York_Public_Library%2C_2009._Pic_01.jpg') center/cover no-repeat fixed;
+            z-index: -2;
         }
         body::after {
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 5 L35 20 L50 20 L38 30 L42 45 L30 35 L18 45 L22 30 L10 20 L25 20Z' fill='rgba(212,175,55,0.03)'/%3E%3C/svg%3E");
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(212,175,55,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(59,130,246,0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(168,85,247,0.08) 0%, transparent 40%);
             z-index: -1;
         }
 
@@ -2022,6 +2022,10 @@
         }
 
         async function init() {
+            // ?test parameter forces new user view (for testing)
+            if (window.location.search.includes('test')) {
+                localStorage.removeItem('avitzur_full_access');
+            }
             // Check if user already has access
             const savedAccess = localStorage.getItem('avitzur_full_access');
             if (savedAccess === 'true') {
