@@ -2033,14 +2033,19 @@
         }
 
         async function init() {
-            // ?test parameter forces new user view (for testing)
-            if (window.location.search.includes('test')) {
+            // ?test parameter forces new user view (for testing timer + payment)
+            var urlParams = window.location.search.toLowerCase();
+            if (urlParams.includes('test') || urlParams.includes('reset') || urlParams.includes('new')) {
                 localStorage.removeItem('avitzur_full_access');
+                hasFullAccess = false;
+                console.log('TEST MODE: localStorage cleared, showing login screen');
             }
             // Check if user already has access
-            const savedAccess = localStorage.getItem('avitzur_full_access');
-            if (savedAccess === 'true') {
-                hasFullAccess = true;
+            if (!hasFullAccess) {
+                const savedAccess = localStorage.getItem('avitzur_full_access');
+                if (savedAccess === 'true') {
+                    hasFullAccess = true;
+                }
             }
 
             // Load embedded questions (works with file:// protocol)
