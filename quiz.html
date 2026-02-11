@@ -1128,12 +1128,13 @@
             try {
                 isPreviewMode = true;
                 hasFullAccess = false;
+            } catch(e) { alert('ERR1: ' + e.message + ' | ' + e.stack); return; }
+            try {
                 startQuiz();
+            } catch(e) { alert('ERR2-startQuiz: ' + e.message + ' | line: ' + e.stack); return; }
+            try {
                 startPreviewTimer();
-            } catch(e) {
-                alert('שגיאה: ' + e.message);
-                console.error('startPreview error:', e);
-            }
+            } catch(e) { alert('ERR3-timer: ' + e.message + ' | line: ' + e.stack); return; }
         }
 
         function startPreviewTimer() {
@@ -1205,9 +1206,9 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('quiz-area').style.display = 'block';
             document.getElementById('score-display').style.display = 'block';
-            loadProgress();
-            renderAll();
-            updateAdminBadge();
+            try { loadProgress(); } catch(e) { alert('ERR-loadProgress: ' + e.message); }
+            try { renderAll(); } catch(e) { alert('ERR-renderAll: ' + e.message + ' | ' + e.stack); }
+            try { updateAdminBadge(); } catch(e) { alert('ERR-adminBadge: ' + e.message); }
         }
 
         function renderAll() {
