@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 10 טיפי זהב להצלחה בחידון התנ״ך</title>
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 50%, var(--blue-light) 100%);
+            min-height: 100vh;
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .tips-hero {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 80px 20px 30px;
+        }
+
+        .tips-hero-icon {
+            font-size: 4rem;
+            margin-bottom: 0.8rem;
+            animation: bounce 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.5));
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .tips-hero h1 {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .tips-hero-sub {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            font-weight: 300;
+            color: var(--gold-light);
+            opacity: 0.85;
+        }
+
+        /* Tips Container */
+        .tips-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tip-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tip-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            border-color: var(--gold);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.2);
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .tip-card:hover::before {
+            left: 100%;
+        }
+
+        .tip-number {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--blue-dark);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .tip-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+        .tip-title { font-size: 1.5rem; font-weight: 700; color: var(--gold); margin-bottom: 1rem; }
+        .tip-content { font-size: 1.1rem; line-height: 1.8; color: rgba(255,255,255,0.9); }
+
+        /* Locked State */
+        .tip-card.locked {
+            filter: blur(6px);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .tip-card.locked .tip-content {
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255,255,255,0.5);
+        }
+
+        /* Lock Banner */
+        .lock-banner {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: -1rem auto 2rem;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            text-align: center;
+            display: none;
+        }
+
+        .lock-banner.show { display: block; }
+
+        .lock-banner h3 {
+            color: var(--gold);
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .lock-banner p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 15px;
+        }
+
+        .lock-banner .unlock-btn {
+            display: inline-block;
+            padding: 12px 35px;
+            background: linear-gradient(45deg, var(--gold), var(--gold-dark));
+            color: var(--blue-dark);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Heebo', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .lock-banner .unlock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Quote */
+        .quote-section {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            padding: 3.5rem 2rem;
+            text-align: center;
+            margin: 3rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-section::before, .quote-section::after {
+            content: '״';
+            font-size: 7rem;
+            color: rgba(30, 58, 95, 0.15);
+            position: absolute;
+            font-family: serif;
+        }
+
+        .quote-section::before { top: 0; right: 2rem; }
+        .quote-section::after { bottom: -2rem; left: 2rem; transform: rotate(180deg); }
+
+        .quote-text {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 600;
+            color: var(--blue-dark);
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            z-index: 9998;
+            transition: width 0.1s;
+        }
+
+        /* Footer */
+        .tips-footer {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tips-footer p {
+            color: var(--gold-light);
+            font-size: 1.1rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .tip-card { padding: 1.5rem; padding-top: 2.5rem; }
+            .tip-number { width: 50px; height: 50px; font-size: 1.2rem; top: -10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="tips-hero">
+        <div class="tips-hero-icon">💡</div>
+        <h1>10 טיפי זהב להצלחה</h1>
+        <p class="tips-hero-sub">שיטות מוכחות להכנה מנצחת לחידון התנ״ך</p>
+    </div>
+
+    <section class="tips-container" id="tips-container">
+        <article class="tip-card" data-tip="1">
+            <div class="tip-number">1</div>
+            <span class="tip-icon">😊</span>
+            <h3 class="tip-title">הנאה מהדרך</h3>
+            <p class="tip-content">הכי חשוב ליהנות מהדרך. כשהלימוד מתקשר לדבר שאתה אוהב – למקום נעים, לשוקו חם או נוף יפה – המוח יוצר חיבורים טובים יותר. לסיים כשעדיין נהנים, לפני שמותשים, ולזכור שההנאה מהדרך היא הדלק הכי חזק להצלחה.</p>
+        </article>
+
+        <article class="tip-card" data-tip="2">
+            <div class="tip-number">2</div>
+            <span class="tip-icon">📚</span>
+            <h3 class="tip-title">שיטת הלמידה</h3>
+            <p class="tip-content">כל יום חזור בקצרה על מה שלמדת אתמול, והמשך הלאה. כתוב לעצמך נקודות שאתה פחות זוכר וחזור עליהן שוב מחר, בסוף השבוע, ואחרי חודש – עד שזה נטמע עמוק בזיכרון.</p>
+        </article>
+
+        <!-- LOCKED from here -->
+        <div class="lock-banner" id="lockBanner">
+            <h3>🔒 10 טיפי זהב ממתינים לך</h3>
+            <p>שלם ₪49 חד-פעמי וקבל גישה מלאה לכל 10 הטיפים</p>
+            <button class="unlock-btn" onclick="showPayment()">🔓 פתח גישה מלאה — ₪49</button>
+        </div>
+
+        <article class="tip-card" data-tip="3">
+            <div class="tip-number">3</div>
+            <span class="tip-icon">🎯</span>
+            <h3 class="tip-title">הצבת יעדים</h3>
+            <p class="tip-content">כדאי לספור כמה עמודים או נושאים יש, לחלק לימים, ולקבוע יעד יומי קטן וברור. עדיף יעד קטן שברזל שאתה עומד בו, מאשר יעד גדול שאתה מפספס. כשהיעד מדויק – פתאום מוצאים את עצמנו מנצלים כל רגע פנוי כדי להשלים אותו.</p>
+        </article>
+
+        <article class="tip-card" data-tip="4">
+            <div class="tip-number">4</div>
+            <span class="tip-icon">⏰</span>
+            <h3 class="tip-title">יצירת הרגל קבוע</h3>
+            <p class="tip-content">כשיש זמן קבוע ללמידה, זה מפסיק להיות מאבק. אחרי כמה ימים נוצרת שגרה – פשוט באים ולומדים בלי התלבטויות. זה גם מייצב את המוח וגם מגדיל את ההנאה מהלמידה עצמה.</p>
+        </article>
+
+        <article class="tip-card" data-tip="5">
+            <div class="tip-number">5</div>
+            <span class="tip-icon">🧠</span>
+            <h3 class="tip-title">הדמיות ודימויים (שובר השוויון)</h3>
+            <p class="tip-content">להכניס את הלמידה לדמיון. לדמיין מקומות, פרטים, תמונות. למשל – רשימת מסעות של אברהם: לראות את שכם אלון מורה במוח במיקום מסוים מוכר, וכך להמשיך הלאה עם כל המסעות. אפשר גם להיעזר בגימטריות, ראשי תיבות, טבלאות או אפילו שירים – הכול כדי להפוך את הידע לחוויה מוחשית.</p>
+        </article>
+
+        <article class="tip-card" data-tip="6">
+            <div class="tip-number">6</div>
+            <span class="tip-icon">⚖️</span>
+            <h3 class="tip-title">עקביות ומנוחה</h3>
+            <p class="tip-content">אי אפשר לדחוס הכול ביום אחד. כל יום עוד קצת, ועוד קצת – זה בונה את ההר. אבל גם צריך לדעת לעצור. לתת לגוף ולמוח מנוחה, לשחרר רגע את השרירים, ואז לחזור בלב פתוח ורענן.</p>
+        </article>
+
+        <article class="tip-card" data-tip="7">
+            <div class="tip-number">7</div>
+            <span class="tip-icon">🔄</span>
+            <h3 class="tip-title">חזרה פעילה</h3>
+            <p class="tip-content">לא רק לקרוא – לשחזר. לפני הלימוד לעצור ולנסות לזכור מה למדתי, בקול או בראש. כשנתקעים, זה כמו שאלה שלא ידענו את התשובה עליה – ואז כשמוצאים את התשובה, היא נצרבת חזק בזיכרון. זה גם מפעיל את המוח וגם עוזר לבדוק מה באמת יודעים ומה לא.</p>
+        </article>
+
+        <article class="tip-card" data-tip="8">
+            <div class="tip-number">8</div>
+            <span class="tip-icon">🎧</span>
+            <h3 class="tip-title">שימוש בהקלטות ובשמיעה</h3>
+            <p class="tip-content">אפשר להקליט את עצמנו עם הדימויים שיצרנו, מילים שפחות זוכרים ועוד, ולשמוע למחרת. ליצור שירים ולשמוע, או הקראות של ספרים שלמים.</p>
+        </article>
+
+        <article class="tip-card" data-tip="9">
+            <div class="tip-number">9</div>
+            <span class="tip-icon">🔥</span>
+            <h3 class="tip-title">תרגול לחץ</h3>
+            <p class="tip-content">הלחץ הוא פקטור אמיתי. לכן חשוב לדמות מבחנים – עם טיימר, שאלות מהירות, או חבר שמנהל סימולציה של חידון. ככל שמתרגלים את התחושה הזו יותר, כך המוח לומד לפעול בשקט ובדיוק גם תחת לחץ. להגיד לעצמנו כל הזמן ולדמיין את הזכייה!</p>
+        </article>
+
+        <article class="tip-card" data-tip="10">
+            <div class="tip-number">10</div>
+            <span class="tip-icon">💎</span>
+            <h3 class="tip-title">ה״למה״ שלי</h3>
+            <p class="tip-content">ככל שה״למה״ שלי ברור יותר – למה אני עושה את זה, מה מניע אותי באמת – כך הכול מסתדר סביבו. אם ה״למה״ חזק, שום קושי לא יעצור אותי. הוא הופך את הדרך למדויקת, את הלב למלא, ואת ההישג לאפשרי.</p>
+        </article>
+    </section>
+
+    <section class="quote-section">
+        <p class="quote-text">ההנאה מהדרך היא הדלק הכי חזק להצלחה</p>
+    </section>
+
+    <footer class="tips-footer">
+        <p>בהצלחה עצומה בחידון! 🌟</p>
+    </footer>
+
+    <!-- Payment Overlay -->
+    <div class="pay-overlay" id="payOverlay">
+        <div class="pay-card">
+            <h2>💡 10 טיפי זהב להצלחה</h2>
+            <p style="color: #82ccdd; margin-bottom: 10px;">שיטות מנצחות להכנה לחידון התנ״ך</p>
+            <div class="price">₪49</div>
+            <p class="price-note">תשלום חד-פעמי • גישה ללא הגבלה</p>
+            <ul class="features">
+                <li>10 טיפי זהב מקיפים</li>
+                <li>שיטות למידה מוכחות</li>
+                <li>טכניקות זיכרון ודמיון</li>
+                <li>אסטרטגיות לתרגול לחץ</li>
+            </ul>
+            <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
+                <a href="https://www.bitpay.co.il/app/link/pay?amount=49&phone=0526953500&name=%D7%98%D7%99%D7%A4%D7%99%20%D7%96%D7%94%D7%91%20%D7%9C%D7%97%D7%99%D7%93%D7%95%D7%9F%20%D7%94%D7%AA%D7%A0%D7%B4%D7%9A" target="_blank" class="pay-btn bit">📱 שלם ₪49 בביט</a>
+                <a href="https://payboxapp.page.link/KVj2h6SQn5t9BGWZ7" target="_blank" class="pay-btn paybox">💳 שלם ₪49 בפייבוקס</a>
+                <a href="https://wa.me/972526953500?text=%D7%A9%D7%9C%D7%9E%D7%AA%D7%99%20%D7%A2%D7%9C%20%D7%98%D7%99%D7%A4%D7%99%20%D7%96%D7%94%D7%91%20%D7%9C%D7%97%D7%99%D7%93%D7%95%D7%9F%20%D7%94%D7%AA%D7%A0%22%D7%9A%20-%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%9C%D7%A9%D7%9C%D7%9D" target="_blank" class="pay-btn whatsapp">💬 שלח הודעה בוואטסאפ</a>
+            </div>
+            <p style="color:rgba(255,255,255,0.5); margin-top:15px; font-size:0.85em;">העבר ₪49 בביט/פייבוקס למספר <span style="color:#f7d794; direction:ltr; unicode-bidi:embed; font-weight:bold;">052-6953500</span> ושלח הודעה בוואטסאפ לקבלת קוד גישה</p>
+            <div class="pay-code-section">
+                <p style="color: #82ccdd; margin-bottom: 10px; font-size: 0.9em;">כבר שילמת? הכנס קוד גישה:</p>
+                <input type="password" class="pay-code-input" id="tipsCodeInput" placeholder="קוד גישה" onkeypress="if(event.key==='Enter')checkTipsCode()">
+                <button class="pay-code-btn" onclick="checkTipsCode()">כניסה</button>
+                <p id="tipsCodeError" style="color: #e55039; margin-top: 10px; display: none; font-size: 0.9em;">קוד שגוי, נסה שוב</p>
+            </div>
+            <button onclick="hidePayment()" style="margin-top:15px; background:none; border:none; color:rgba(255,255,255,0.4); cursor:pointer; font-size:0.9em; font-family:'Heebo',sans-serif;">✕ סגור</button>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+        const TIPS_ACCESS_CODE = 'TIPS2025';
+        const FREE_TIPS = 0;
+
+        initParticles(50);
+        initNav('tips');
+
+        // Check access
+        function applyAccess() {
+            const hasAccess = hasTipsAccess();
+            const cards = document.querySelectorAll('.tip-card');
+            const lockBanner = document.getElementById('lockBanner');
+
+            cards.forEach((card, i) => {
+                if (!hasAccess && i >= FREE_TIPS) {
+                    card.classList.add('locked');
+                } else {
+                    card.classList.remove('locked');
+                }
+            });
+
+            if (hasAccess) {
+                lockBanner.classList.remove('show');
+            } else {
+                lockBanner.classList.add('show');
+            }
+        }
+
+        applyAccess();
+
+        // Payment overlay
+        function showPayment() {
+            document.getElementById('payOverlay').classList.add('show');
+        }
+
+        function hidePayment() {
+            document.getElementById('payOverlay').classList.remove('show');
+        }
+
+        // Code check
+        function checkTipsCode() {
+            const input = document.getElementById('tipsCodeInput').value.trim();
+            if (input.toUpperCase() === TIPS_ACCESS_CODE) {
+                grantTipsAccess();
+                hidePayment();
+                applyAccess();
+                // Re-trigger card animations
+                document.querySelectorAll('.tip-card').forEach(c => {
+                    c.classList.remove('visible');
+                    setTimeout(() => observer.observe(c), 100);
+                });
+            } else {
+                document.getElementById('tipsCodeError').style.display = 'block';
+                document.getElementById('tipsCodeInput').style.borderColor = '#e55039';
+            }
+        }
+
+        // Scroll progress bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+            document.getElementById('scrollProgress').style.width = progress + '%';
+        });
+
+        // Intersection Observer for card animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = (parseInt(entry.target.dataset.tip) - 1) * 100;
+                    setTimeout(() => entry.target.classList.add('visible'), delay);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.tip-card').forEach(card => observer.observe(card));
+    </script>
+</body>
+</html>

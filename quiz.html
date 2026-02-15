@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מקבץ 856 שאלות בתנ"ך - חידון התנ"ך</title>
+    <title>מקבץ 906 שאלות בתנ"ך - חידון התנ"ך</title>
+    <link rel="stylesheet" href="shared.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -13,7 +14,7 @@
         @keyframes starTwinkle { 0%,100%{opacity:0.3} 50%{opacity:1} }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            font-family: 'Heebo', 'Segoe UI', Tahoma, Arial, sans-serif;
             background: linear-gradient(135deg, #faf6ed 0%, #f0e6d0 25%, #faf6ed 50%, #e8dcc8 75%, #faf6ed 100%);
             background-size: 400% 400%;
             animation: bgShift 30s ease infinite;
@@ -279,7 +280,7 @@
 
         .nav-bar {
             position: sticky;
-            top: 0;
+            top: 56px;
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
             padding: 15px;
@@ -305,6 +306,20 @@
         }
         .search-box:focus { border-color: #d4af37; outline: none; }
         .search-box::placeholder { color: #a09070; }
+
+        .jump-to-question {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #d4af37;
+            background: linear-gradient(45deg, #d4af37, #f7d794);
+            color: #1a0a2e;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .jump-to-question:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212,175,55,0.4); }
+        .jump-to-question:focus { outline: none; box-shadow: 0 0 0 3px rgba(212,175,55,0.3); }
 
         .upload-section {
             margin-top: 30px;
@@ -360,19 +375,36 @@
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(90deg, #e55039, #d63031, #b33939);
+            background: linear-gradient(135deg, #e55039 0%, #d63031 50%, #c0392b 100%);
             color: #fff;
-            padding: 15px 20px;
+            padding: 25px 40px;
             text-align: center;
-            z-index: 9000;
-            font-size: 1.4em;
-            font-weight: bold;
+            z-index: 99999;
+            font-size: 2em;
+            font-weight: 900;
             display: none;
-            box-shadow: 0 4px 20px rgba(229,80,57,0.6);
-            border-bottom: 3px solid #f7d794;
+            box-shadow: 0 10px 40px rgba(229,80,57,0.9), 0 0 0 3px #f7d794;
+            border-bottom: 5px solid #f7d794;
+            animation: bannerPulse 2s infinite;
         }
 
-        .preview-banner .timer-text { animation: timerPulse 1s infinite; font-size: 1.5em; }
+        @keyframes bannerPulse {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(2px); }
+        }
+
+        .preview-banner .timer-text {
+            animation: timerPulse 1s infinite;
+            font-size: 2.5em;
+            font-weight: 900;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            display: inline-block;
+            background: #f7d794;
+            color: #e55039;
+            padding: 5px 20px;
+            border-radius: 10px;
+            margin: 0 10px;
+        }
 
         /* Payment Overlay */
         .payment-overlay {
@@ -814,7 +846,7 @@
     <!-- Payment Overlay -->
     <div class="payment-overlay" id="payment-overlay" aria-hidden="true">
         <div class="payment-card" role="dialog" aria-modal="true" aria-label="חלון תשלום">
-            <h2>📚 מקבץ 856 שאלות בתנ"ך - גישה מלאה</h2>
+            <h2>📚 מקבץ 906 שאלות בתנ"ך - גישה מלאה</h2>
             <p style="color: #82ccdd; margin-bottom: 10px;">שאלות בתנ"ך - הכנה מושלמת למבחן</p>
             <div class="price">₪14.90</div>
             <p class="price-note">תשלום חד-פעמי • גישה ללא הגבלה</p>
@@ -827,10 +859,10 @@
             </ul>
             <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
                 <a href="https://www.bitpay.co.il/app/link/pay?amount=14.90&phone=0526953500&name=%D7%9E%D7%A7%D7%91%D7%A5%20%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%91%D7%AA%D7%A0%D7%9A" target="_blank" class="btn-pay" id="pay-button" style="width:90%; max-width:350px; background:linear-gradient(45deg,#1A6AE0,#3B82F6);">📱 שלם ₪14.90 בביט</a>
-                <a href="https://payboxapp.page.link/KVj2h6SQn5t9BGWZ7" target="_blank" style="display:inline-block; padding:14px 35px; background:linear-gradient(45deg,#00C853,#4CAF50); color:#fff; border-radius:12px; text-decoration:none; font-size:1.1em; font-weight:bold; width:90%; max-width:350px; text-align:center;">💳 שלם ₪14.90 בPayBox</a>
+                <a href="https://payboxapp.page.link/KVj2h6SQn5t9BGWZ7" target="_blank" style="display:inline-block; padding:14px 35px; background:linear-gradient(45deg,#00C853,#4CAF50); color:#fff; border-radius:12px; text-decoration:none; font-size:1.1em; font-weight:bold; width:90%; max-width:350px; text-align:center;">💳 שלם ₪14.90 בפייבוקס</a>
                 <a href="https://wa.me/972526953500?text=%D7%A9%D7%9C%D7%9E%D7%AA%D7%99%20%D7%A2%D7%9C%20%D7%9E%D7%A7%D7%91%D7%A5%20856%20%D7%A9%D7%90%D7%9C%D7%95%D7%AA%20%D7%91%D7%AA%D7%A0%22%D7%9A%20-%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%9C%D7%A9%D7%9C%D7%9D" target="_blank" style="display:inline-block; padding:14px 35px; background:#25D366; color:#fff; border-radius:12px; text-decoration:none; font-size:1.1em; font-weight:bold; width:90%; max-width:350px; text-align:center;">💬 שלח הודעה בוואטסאפ</a>
             </div>
-            <p style="color:rgba(255,255,255,0.5); margin-top:15px; font-size:0.9em;">העבר ₪14.90 בביט/PayBox למספר <span style="color:#f7d794; direction:ltr; unicode-bidi:embed; font-weight:bold;">052-6953500</span> ושלח הודעה בוואטסאפ לקבלת קוד גישה</p>
+            <p style="color:rgba(255,255,255,0.5); margin-top:15px; font-size:0.9em;">העבר ₪14.90 בביט/פייבוקס למספר <span style="color:#f7d794; direction:ltr; unicode-bidi:embed; font-weight:bold;">052-6953500</span> ושלח הודעה בוואטסאפ לקבלת קוד גישה</p>
             <div class="payment-code-section">
                 <p style="color: #82ccdd; margin-bottom: 10px; font-size: 0.95em;">כבר שילמת? הכנס קוד גישה:</p>
                 <label for="overlay-code-input" class="sr-only">קוד גישה</label>
@@ -843,7 +875,7 @@
 
     <div class="container" role="main" aria-label="תוכן ראשי">
         <header role="banner">
-            <h1>📚 מקבץ 856 שאלות בתנ"ך</h1>
+            <h1>📚 מקבץ 906 שאלות בתנ"ך</h1>
             <p class="subtitle">✡ שאלות בתנ"ך • ברוח חידון התנ"ך הארצי ✡</p>
             <div class="score-display" id="score-display" style="display: none;">
                 ניקוד: <span class="score-value" id="score">0</span>
@@ -870,13 +902,18 @@
 
         <div id="quiz-area" style="display: none;">
             <nav class="nav-bar" aria-label="ניווט ראשי">
-                <input type="text" class="search-box" id="search-input" aria-label="חיפוש שאלה" placeholder="חיפוש שאלה..." oninput="searchQuestions(this.value)">
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <input type="text" class="search-box" id="search-input" aria-label="חיפוש שאלה" placeholder="חיפוש שאלה..." oninput="searchQuestions(this.value)">
+                    <select class="jump-to-question" id="jump-to-select" aria-label="קפוץ לשאלה" onchange="jumpToQuestion(this.value)">
+                        <option value="">🔍 קפוץ לשאלה...</option>
+                    </select>
+                </div>
                 <div>
                     <button class="btn btn-secondary" onclick="goToAnswers()" style="padding: 10px 20px; font-size: 1em;">לתשובות ⬇️</button>
                     <button class="btn btn-upload" onclick="document.getElementById('file-upload').click()" style="padding: 10px 20px; font-size: 1em;">📤 העלה שאלות</button>
                     <button class="btn btn-danger" id="admin-btn" onclick="openAdminPanel()" style="padding: 10px 20px; font-size: 1em;">🛡️ ניהול <span id="pending-badge" class="pending-count-badge" style="display:none;">0</span></button>
                 </div>
-            </div>
+            </nav>
 
             <div class="stats-bar" aria-live="polite">
                 <div class="stat-item">
@@ -1221,6 +1258,7 @@
             renderQuestions();
             renderAnswers();
             updateStats();
+            populateJumpSelect();
         }
 
         function renderQuestions() {
@@ -1486,6 +1524,30 @@
 
         function goToAnswers() {
             document.getElementById('answers-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function populateJumpSelect() {
+            const select = document.getElementById('jump-to-select');
+            if (!select) return;
+
+            select.innerHTML = '<option value="">🔍 קפוץ לשאלה...</option>';
+
+            questions.forEach((q, index) => {
+                const option = document.createElement('option');
+                option.value = q.id;
+                option.textContent = `שאלה ${q.id}`;
+                select.appendChild(option);
+            });
+        }
+
+        function jumpToQuestion(qId) {
+            if (!qId) return;
+            const element = document.getElementById(`question-${qId}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.style.animation = 'pulse 0.5s ease 2';
+            }
+            document.getElementById('jump-to-select').value = '';
         }
 
         function uploadQuestions(event) {
@@ -2093,6 +2155,17 @@
                 }
             }
 
+            // Renumber questions sequentially 1..N
+            questions.forEach((q, i) => { q.id = i + 1; });
+
+            // Update title + header with actual count
+            var count = questions.length;
+            document.title = '\u05DE\u05E7\u05D1\u05E5 ' + count + ' \u05E9\u05D0\u05DC\u05D5\u05EA \u05D1\u05EA\u05E0"\u05DA - \u05D7\u05D9\u05D3\u05D5\u05DF \u05D4\u05EA\u05E0"\u05DA';
+            var h1El = document.querySelector('header h1');
+            if (h1El) h1El.innerHTML = '\uD83D\uDCDA \u05DE\u05E7\u05D1\u05E5 ' + count + ' \u05E9\u05D0\u05DC\u05D5\u05EA \u05D1\u05EA\u05E0"\u05DA';
+            var payTitleEl = document.querySelector('.payment-card h2');
+            if (payTitleEl) payTitleEl.innerHTML = '\uD83D\uDCDA \u05DE\u05E7\u05D1\u05E5 ' + count + ' \u05E9\u05D0\u05DC\u05D5\u05EA \u05D1\u05EA\u05E0"\u05DA - \u05D2\u05D9\u05E9\u05D4 \u05DE\u05DC\u05D0\u05D4';
+
             loadApprovedUserQuestions();
             applyCorrections();
             loadPendingQuestions();
@@ -2314,5 +2387,7 @@
     })();
     </script>
     <div class="version-tag">v2.1</div>
+    <script src="shared.js"></script>
+    <script>initNav('quiz');</script>
 </body>
 </html>

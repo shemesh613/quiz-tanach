@@ -1,0 +1,328 @@
+/* ===== עולם התנ״ך - Shared Styles ===== */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --gold: #D4AF37;
+    --gold-light: #F4E4BA;
+    --gold-dark: #B8960C;
+    --blue: #1E3A5F;
+    --blue-light: #2E5A8F;
+    --blue-dark: #0D1F33;
+    --white: #FAFAFA;
+    --text: #1a1a1a;
+}
+
+/* ===== Shared Nav Bar ===== */
+.hub-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, rgba(13, 31, 51, 0.97) 0%, rgba(30, 58, 95, 0.97) 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 56px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    direction: rtl;
+}
+
+.hub-nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 900px;
+    width: 100%;
+    justify-content: center;
+}
+
+.hub-nav-logo {
+    font-size: 1.3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+    margin-left: 20px;
+    white-space: nowrap;
+    font-family: 'Heebo', sans-serif;
+}
+
+.hub-nav-links {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.hub-nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-family: 'Heebo', sans-serif;
+    white-space: nowrap;
+    position: relative;
+}
+
+.hub-nav-link:hover {
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.hub-nav-link.active {
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.15);
+    font-weight: 700;
+}
+
+.hub-nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+}
+
+.hub-nav-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.hub-nav-badge.locked {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* ===== Access Status Badges ===== */
+.access-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-family: 'Heebo', sans-serif;
+}
+
+.access-badge.unlocked {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.access-badge.locked {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ===== Shared Particles ===== */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: particleFloat 15s infinite ease-in-out;
+}
+
+@keyframes particleFloat {
+    0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ===== Payment Overlay (shared) ===== */
+.pay-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.pay-overlay.show {
+    display: flex;
+}
+
+.pay-card {
+    background: linear-gradient(135deg, #1a0a2e, #2a1548);
+    border: 2px solid var(--gold);
+    border-radius: 24px;
+    padding: 40px 35px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(212, 175, 55, 0.2);
+    direction: rtl;
+    font-family: 'Heebo', sans-serif;
+    color: #fff;
+}
+
+.pay-card h2 {
+    color: var(--gold-light);
+    margin-bottom: 10px;
+    font-size: 1.6rem;
+}
+
+.pay-card .price {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #78e08f;
+    margin: 15px 0;
+}
+
+.pay-card .price-note {
+    color: #82ccdd;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.pay-card .features {
+    text-align: right;
+    margin: 20px 0;
+    list-style: none;
+    padding: 0;
+}
+
+.pay-card .features li {
+    padding: 7px 0;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.pay-card .features li::before {
+    content: '\2705 ';
+}
+
+.pay-btn {
+    display: block;
+    padding: 14px 35px;
+    color: #fff;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    margin: 6px auto;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'Heebo', sans-serif;
+}
+
+.pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.pay-btn.bit {
+    background: linear-gradient(45deg, #1A6AE0, #3B82F6);
+}
+
+.pay-btn.paybox {
+    background: linear-gradient(45deg, #00C853, #4CAF50);
+}
+
+.pay-btn.whatsapp {
+    background: #25D366;
+}
+
+.pay-code-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pay-code-input {
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-align: center;
+    width: 200px;
+    margin-left: 10px;
+    font-family: 'Heebo', sans-serif;
+}
+
+.pay-code-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.pay-code-btn {
+    padding: 12px 25px;
+    background: linear-gradient(45deg, #78e08f, #38ada9);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 600px) {
+    .hub-nav {
+        height: 50px;
+        padding: 0 10px;
+    }
+
+    .hub-nav-logo {
+        font-size: 1rem;
+        margin-left: 10px;
+    }
+
+    .hub-nav-link {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+
+    .pay-card {
+        padding: 25px 20px;
+    }
+
+    .pay-card .price {
+        font-size: 2.5rem;
+    }
+}

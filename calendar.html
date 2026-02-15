@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 קביעת פגישת זום - הדרכה אישית</title>
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 50%, var(--blue-light) 100%);
+            min-height: 100vh;
+            color: var(--white);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.2rem;
+        }
+
+        .calendar-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .calendar-header h2 {
+            color: #1a0a2e;
+            font-size: 1.8rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #d4af37, #f7d794);
+            border: none;
+            border-radius: 10px;
+            color: #1a0a2e;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calendar-nav button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day-header {
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            color: #1a0a2e;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: #faf6ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .day-cell:hover:not(.disabled):not(.past) {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: #d4af37;
+            transform: scale(1.05);
+        }
+
+        .day-cell.past {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .day-cell.disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .day-cell.selected {
+            background: linear-gradient(45deg, #d4af37, #f7d794);
+            border-color: #d4af37;
+            color: #1a0a2e;
+            font-weight: bold;
+        }
+
+        .day-number {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .day-status {
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .time-slots {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .time-slots.show {
+            display: block;
+        }
+
+        .time-slots h3 {
+            color: #1a0a2e;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .time-slot {
+            padding: 15px;
+            background: #faf6ed;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #1a0a2e;
+        }
+
+        .time-slot:hover:not(.busy) {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: #d4af37;
+            transform: translateY(-2px);
+        }
+
+        .time-slot.busy {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .time-slot.selected {
+            background: linear-gradient(45deg, #78e08f, #38ada9);
+            border-color: #38ada9;
+            color: white;
+        }
+
+        .booking-form {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .booking-form.show {
+            display: block;
+        }
+
+        .booking-form h3 {
+            color: #1a0a2e;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #1a0a2e;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            font-family: 'Heebo', sans-serif;
+            font-size: 1rem;
+            background: #faf6ed;
+            color: #1a0a2e;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, #78e08f, #38ada9);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(120, 224, 143, 0.5);
+        }
+
+        .booking-summary {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-right: 4px solid #d4af37;
+        }
+
+        .booking-summary p {
+            color: #1a0a2e;
+            margin: 5px 0;
+            font-size: 1.1rem;
+        }
+
+        .booking-summary strong {
+            color: #d4af37;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-grid {
+                gap: 5px;
+            }
+
+            .day-cell {
+                padding: 5px;
+            }
+
+            .day-number {
+                font-size: 1rem;
+            }
+
+            .day-status {
+                display: none;
+            }
+
+            .slots-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>📅 קביעת פגישת זום</h1>
+            <p>הדרכה אישית להכנה לחידון התנ"ך • 45 דקות</p>
+        </div>
+
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <h2 id="month-year"></h2>
+                <div class="calendar-nav">
+                    <button onclick="prevMonth()">◀ חודש קודם</button>
+                    <button onclick="nextMonth()">חודש הבא ▶</button>
+                </div>
+            </div>
+
+            <div class="calendar-grid" id="calendar"></div>
+        </div>
+
+        <div class="time-slots" id="time-slots">
+            <h3>בחר שעה ביום <span id="selected-date"></span></h3>
+            <div class="slots-grid" id="slots-grid"></div>
+        </div>
+
+        <div class="booking-form" id="booking-form">
+            <h3>📝 פרטי ההזמנה</h3>
+            <div class="booking-summary">
+                <p><strong>תאריך:</strong> <span id="summary-date"></span></p>
+                <p><strong>שעה:</strong> <span id="summary-time"></span></p>
+                <p><strong>משך:</strong> 45 דקות</p>
+                <p><strong>מחיר:</strong> ₪97 (כולל הטיפים)</p>
+            </div>
+
+            <form onsubmit="submitBooking(event)">
+                <div class="form-group">
+                    <label for="name">שם מלא *</label>
+                    <input type="text" id="name" required placeholder="הכנס שם מלא...">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">טלפון *</label>
+                    <input type="tel" id="phone" required placeholder="050-1234567">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">אימייל *</label>
+                    <input type="email" id="email" required placeholder="example@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">הערות (אופציונלי)</label>
+                    <textarea id="notes" placeholder="ספר לנו על עצמך, מה אתה רוצה להתמקד בו בפגישה..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">📞 קבע פגישת זום • ₪97</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+        initParticles(50);
+        initNav('tips');
+
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedTime = null;
+
+        // שעות תפוסות לפי יום בשבוע
+        const busyHours = {
+            0: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'], // ראשון עד 15:15
+            1: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '20:00'], // שני עד 15:20 + 20:00
+            2: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00'], // שלישי עד 14:30
+            3: 'all-day', // רביעי - כל היום
+            4: 'all-day', // חמישי - כל היום
+            5: [], // שישי
+            6: [] // שבת
+        };
+
+        const timeSlots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            const monthYear = document.getElementById('month-year');
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            const monthNames = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
+            monthYear.textContent = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            calendar.innerHTML = '';
+
+            // כותרות ימים
+            const dayNames = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+            dayNames.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = day;
+                calendar.appendChild(header);
+            });
+
+            // ימים ריקים
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'day-cell disabled';
+                calendar.appendChild(emptyDay);
+            }
+
+            // ימי החודש
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+
+                const date = new Date(year, month, day);
+                const dayOfWeek = date.getDay();
+
+                // בדיקה אם היום עבר
+                if (date < today) {
+                    dayCell.classList.add('past');
+                }
+
+                // בדיקה אם היום תפוס
+                if (busyHours[dayOfWeek] === 'all-day') {
+                    dayCell.classList.add('disabled');
+                }
+
+                dayCell.innerHTML = `
+                    <div class="day-number">${day}</div>
+                    <div class="day-status">${busyHours[dayOfWeek] === 'all-day' ? 'תפוס' : 'פנוי'}</div>
+                `;
+
+                dayCell.onclick = (e) => selectDate(date, e.currentTarget);
+
+                calendar.appendChild(dayCell);
+            }
+        }
+
+        function selectDate(date, cellElement) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (date < today || busyHours[date.getDay()] === 'all-day') return;
+
+            selectedDate = date;
+            selectedTime = null;
+
+            document.querySelectorAll('.day-cell').forEach(cell => cell.classList.remove('selected'));
+            if (cellElement) {
+                cellElement.classList.add('selected');
+            }
+
+            showTimeSlots(date);
+        }
+
+        function showTimeSlots(date) {
+            const slotsContainer = document.getElementById('time-slots');
+            const slotsGrid = document.getElementById('slots-grid');
+            const selectedDateEl = document.getElementById('selected-date');
+
+            const dayOfWeek = date.getDay();
+            const dateStr = date.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+
+            selectedDateEl.textContent = dateStr;
+            slotsGrid.innerHTML = '';
+
+            if (busyHours[dayOfWeek] === 'all-day') {
+                slotsContainer.classList.remove('show');
+                return;
+            }
+
+            const busy = busyHours[dayOfWeek] || [];
+
+            timeSlots.forEach(time => {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+
+                if (busy.includes(time)) {
+                    slot.classList.add('busy');
+                    slot.textContent = `${time} 🔒`;
+                    slot.title = 'השעה תפוסה';
+                } else {
+                    slot.textContent = time;
+                    slot.onclick = () => selectTime(time, slot);
+                }
+
+                slotsGrid.appendChild(slot);
+            });
+
+            slotsContainer.classList.add('show');
+            document.getElementById('booking-form').classList.remove('show');
+        }
+
+        function selectTime(time, slotElement) {
+            selectedTime = time;
+
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+            slotElement.classList.add('selected');
+
+            showBookingForm();
+        }
+
+        function showBookingForm() {
+            const form = document.getElementById('booking-form');
+            const summaryDate = document.getElementById('summary-date');
+            const summaryTime = document.getElementById('summary-time');
+
+            const dateStr = selectedDate.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+            summaryDate.textContent = dateStr;
+            summaryTime.textContent = selectedTime;
+
+            form.classList.add('show');
+            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function submitBooking(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const notes = document.getElementById('notes').value;
+
+            const dateStr = selectedDate.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+            const message = `🎯 *פגישת זום חדשה - חידון התנ״ך*
+
+👤 *שם:* ${name}
+📱 *טלפון:* ${phone}
+📧 *אימייל:* ${email}
+
+📅 *תאריך:* ${dateStr}
+⏰ *שעה:* ${selectedTime}
+⏱️ *משך:* 45 דקות
+
+💰 *מחיר:* ₪97 (כולל הטיפים)
+
+📝 *הערות:*
+${notes || 'אין הערות'}
+
+---
+נשלח מאתר חידון התנ״ך`;
+
+            const whatsappUrl = `https://wa.me/972526953500?text=${encodeURIComponent(message)}`;
+
+            window.open(whatsappUrl, '_blank');
+
+            alert('הפרטים נשלחו לוואטסאפ!\nנחזור אליך בהקדם לאישור הפגישה.');
+        }
+
+        function prevMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+            document.getElementById('time-slots').classList.remove('show');
+            document.getElementById('booking-form').classList.remove('show');
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+            document.getElementById('time-slots').classList.remove('show');
+            document.getElementById('booking-form').classList.remove('show');
+        }
+
+        // אתחול
+        renderCalendar();
+    </script>
+</body>
+</html>
