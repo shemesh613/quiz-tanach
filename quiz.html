@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מקבץ (כמעט) 1,000 שאלות בתנ"ך - חידון התנ"ך</title>
+    <title>בדרך אל חתן/כלת התנ"ך — חידון התנ"ך</title>
     <link rel="stylesheet" href="shared.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -847,7 +847,7 @@
     <!-- Payment Overlay -->
     <div class="payment-overlay" id="payment-overlay" aria-hidden="true">
         <div class="payment-card" role="dialog" aria-modal="true" aria-label="חלון תשלום">
-            <h2>📚 מקבץ (כמעט) 1,000 שאלות בתנ"ך - גישה מלאה</h2>
+            <h2>🏆 בדרך אל חתן/כלת התנ"ך — גישה מלאה</h2>
             <p style="color: #82ccdd; margin-bottom: 10px;">שאלות בתנ"ך - הכנה מושלמת למבחן</p>
             <div class="price">₪14.90</div>
             <p class="price-note">תשלום חד-פעמי • גישה ללא הגבלה</p>
@@ -883,7 +883,8 @@
 
     <div class="container" role="main" aria-label="תוכן ראשי">
         <header role="banner">
-            <h1>📚 מקבץ (כמעט) 1,000 שאלות בתנ"ך</h1>
+            <h1>🏆 בדרך אל חתן/כלת התנ"ך</h1>
+            <p class="subtitle" style="color:#82ccdd; font-size:1.1em;">כמעט 1,000 שאלות בתנ"ך — התחל את המסע!</p>
             <p class="subtitle">✡ שאלות בתנ"ך • ברוח חידון התנ"ך הארצי ✡</p>
             <div class="score-display" id="score-display" style="display: none;">
                 ניקוד: <span class="score-value" id="score">0</span>
@@ -923,9 +924,22 @@
                 </div>
             </nav>
 
+            <!-- XP Level Bar -->
+            <div id="xp-bar-container" style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 20px; margin-bottom:15px; border:1px solid rgba(212,175,55,0.15);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span id="xp-level" style="color:#d4af37; font-weight:bold; font-size:1.1em;">🌱 מתחיל</span>
+                    <span id="xp-points" style="color:#82ccdd; font-size:0.9em;">0 XP</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.1); border-radius:8px; height:10px; overflow:hidden;">
+                    <div id="xp-progress" style="height:100%; width:0%; background:linear-gradient(90deg,#d4af37,#f7d794); border-radius:8px; transition:width 0.5s ease;"></div>
+                </div>
+                <div id="xp-next" style="color:rgba(255,255,255,0.4); font-size:0.75em; text-align:left; margin-top:4px;"></div>
+            </div>
+
             <!-- Game Mode Toggle -->
             <div style="display:flex; gap:10px; justify-content:center; margin-bottom:15px; flex-wrap:wrap;">
                 <button class="btn btn-secondary" id="survival-btn" onclick="toggleSurvival()" style="padding:8px 16px; font-size:0.95em;">💀 מצב הישרדות</button>
+                <button class="btn btn-secondary" onclick="confirmReset()" style="padding:8px 16px; font-size:0.95em;">🔄 התחל מחדש</button>
                 <div id="survival-lives" style="display:none; font-size:1.3em; color:#e55039;">❤️❤️❤️</div>
             </div>
 
@@ -1556,6 +1570,73 @@
             el.textContent = '❤️'.repeat(survivalLives) + '🖤'.repeat(3 - survivalLives);
         }
 
+        // XP Levels
+        const XP_LEVELS = [
+            { name: '🌱 מתחיל', min: 0 },
+            { name: '📖 לומד', min: 100 },
+            { name: '📚 חרוץ', min: 300 },
+            { name: '⭐ מתקדם', min: 600 },
+            { name: '🔥 מומחה', min: 1000 },
+            { name: '💎 אלוף', min: 2000 },
+            { name: '👑 חתן/כלת התנ"ך', min: 5000 },
+        ];
+
+        function getLevel(xp) {
+            let level = XP_LEVELS[0];
+            for (let i = XP_LEVELS.length - 1; i >= 0; i--) {
+                if (xp >= XP_LEVELS[i].min) { level = XP_LEVELS[i]; break; }
+            }
+            return level;
+        }
+
+        function getNextLevel(xp) {
+            for (const lvl of XP_LEVELS) {
+                if (xp < lvl.min) return lvl;
+            }
+            return null;
+        }
+
+        function updateXPBar() {
+            const levelEl = document.getElementById('xp-level');
+            const pointsEl = document.getElementById('xp-points');
+            const progressEl = document.getElementById('xp-progress');
+            const nextEl = document.getElementById('xp-next');
+            if (!levelEl) return;
+
+            const currentLevel = getLevel(score);
+            const nextLevel = getNextLevel(score);
+
+            levelEl.textContent = currentLevel.name;
+            pointsEl.textContent = score + ' XP';
+
+            if (nextLevel) {
+                const prevMin = currentLevel.min;
+                const progress = ((score - prevMin) / (nextLevel.min - prevMin)) * 100;
+                progressEl.style.width = Math.min(progress, 100) + '%';
+                nextEl.textContent = 'הבא: ' + nextLevel.name + ' (' + (nextLevel.min - score) + ' XP)';
+            } else {
+                progressEl.style.width = '100%';
+                progressEl.style.background = 'linear-gradient(90deg,#d4af37,#f7d794,#d4af37)';
+                nextEl.textContent = '🏆 הגעת לדרגה הגבוהה ביותר!';
+            }
+        }
+
+        function confirmReset() {
+            if (confirm('האם אתה בטוח? כל הניקוד, הרצפים והתשובות יימחקו.')) {
+                score = 0; correctCount = 0; wrongCount = 0;
+                streak = 0; bestStreak = 0;
+                answeredQuestions = {};
+                questionTimers = {};
+                survivalLives = 3;
+                localStorage.removeItem('avitzur_progress');
+                localStorage.removeItem('avitzur_score');
+                updateStats();
+                updateXPBar();
+                renderAll();
+                showAchievement('🔄 התחלנו מחדש!');
+            }
+        }
+
         function showGameOver() {
             const overlay = document.createElement('div');
             overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:100002; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff;';
@@ -1609,6 +1690,15 @@
             }
             const bestEl = document.getElementById('best-streak');
             if (bestEl) bestEl.textContent = bestStreak + ' ⭐';
+
+            updateXPBar();
+
+            // Check level up
+            const prevLevel = getLevel(score - 1);
+            const curLevel = getLevel(score);
+            if (curLevel.min > prevLevel.min && score > 0) {
+                showAchievement('🎉 דרגה חדשה: ' + curLevel.name);
+            }
         }
 
         function filterQuestions(filter, element) {
@@ -2355,7 +2445,7 @@
         <div style="max-width:700px; margin:30px auto; padding:30px; background:#1e293b; border-radius:16px; border:2px solid #475569; direction:rtl;">
             <h2 style="color:#f7d794; margin-bottom:20px; text-align:center;">הצהרת נגישות</h2>
             <div style="color:#e2e8f0; line-height:1.8; font-size:1em;">
-                <p style="margin-bottom:12px;"><strong>אתר מקבץ (כמעט) 1,000 שאלות בתנ"ך</strong> מחויב להנגשת תכניו לכלל הציבור, לרבות אנשים עם מוגבלויות, בהתאם לחוק שוויון זכויות לאנשים עם מוגבלות, התשנ"ח-1998, ותקנות הנגישות לשירותי אינטרנט, התשע"ג-2013.</p>
+                <p style="margin-bottom:12px;"><strong>אתר בדרך אל חתן/כלת התנ"ך</strong> מחויב להנגשת תכניו לכלל הציבור, לרבות אנשים עם מוגבלויות, בהתאם לחוק שוויון זכויות לאנשים עם מוגבלות, התשנ"ח-1998, ותקנות הנגישות לשירותי אינטרנט, התשע"ג-2013.</p>
 
                 <p style="margin-bottom:12px;"><strong>תקן הנגישות:</strong> האתר עומד בדרישות תקן WCAG 2.1 ברמה AA (Web Content Accessibility Guidelines).</p>
 
