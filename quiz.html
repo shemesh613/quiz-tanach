@@ -259,6 +259,7 @@
         @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
         @keyframes slideUp { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes achievePop { 0% { transform: translate(-50%,-50%) scale(0); } 60% { transform: translate(-50%,-50%) scale(1.2); } 100% { transform: translate(-50%,-50%) scale(1); } }
         @keyframes timerPulse { 0%, 100% { color: #e55039; } 50% { color: #f7d794; } }
 
         .confetti { position: fixed; width: 15px; height: 15px; background: #f7d794; pointer-events: none; animation: confetti 1s ease-out forwards; }
@@ -895,7 +896,7 @@
         <div id="login-screen">
             <div class="preview-section">
                 <h3>✨ נסו בחינם!</h3>
-                <p>45 שניות צפייה חופשית - טעימה מחידון התנ"ך</p>
+                <p>2 דקות צפייה חופשית - טעימה מחידון התנ"ך</p>
                 <button class="btn btn-secondary" onclick="startPreview()">🏆 התחל צפייה חינמית</button>
             </div>
             <h2>🔐 כניסה עם קוד גישה</h2>
@@ -922,6 +923,12 @@
                 </div>
             </nav>
 
+            <!-- Game Mode Toggle -->
+            <div style="display:flex; gap:10px; justify-content:center; margin-bottom:15px; flex-wrap:wrap;">
+                <button class="btn btn-secondary" id="survival-btn" onclick="toggleSurvival()" style="padding:8px 16px; font-size:0.95em;">💀 מצב הישרדות</button>
+                <div id="survival-lives" style="display:none; font-size:1.3em; color:#e55039;">❤️❤️❤️</div>
+            </div>
+
             <div class="stats-bar" aria-live="polite">
                 <div class="stat-item">
                     <div class="stat-value" id="total-questions">0</div>
@@ -938,6 +945,14 @@
                 <div class="stat-item">
                     <div class="stat-value" id="accuracy">0%</div>
                     <div class="stat-label">אחוז הצלחה</div>
+                </div>
+                <div class="stat-item" style="position:relative;">
+                    <div class="stat-value" id="streak-display" style="color:#f0932b;">0 🔥</div>
+                    <div class="stat-label">רצף</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="best-streak" style="color:#d4af37;">0 ⭐</div>
+                    <div class="stat-label">שיא רצף</div>
                 </div>
             </div>
 
@@ -1041,7 +1056,7 @@
 
     <script>
         const ACCESS_CODE = 'AVITZUR2025';
-        const PREVIEW_SECONDS = 45;
+        const PREVIEW_SECONDS = 120;
         const PAYMENT_URL = 'https://payboxapp.page.link/avitzur-tanach';
         let questions = [];
         let score = 0;
@@ -1054,6 +1069,13 @@
         let searchTerm = '';
         let previewTimer = null;
         let previewSecondsLeft = PREVIEW_SECONDS;
+
+        // Gamification
+        let streak = 0;
+        let bestStreak = 0;
+        let questionTimers = {};
+        let survivalMode = false;
+        let survivalLives = 3;
 
         function parseQuestions(text) {
             const lines = text.split('\n');
@@ -1301,6 +1323,7 @@
                 const card = document.createElement('div');
                 card.className = 'question-card';
                 card.id = `question-${q.id}`;
+                if (!wasAnswered) startQuestionTimer(q.id);
 
                 let optionsHTML = '';
                 if (q.isOpen) {
@@ -1397,16 +1420,25 @@
 
             if (isCorrect) {
                 element.classList.add('correct');
-                addScore(10);
+                streak++;
+                if (streak > bestStreak) bestStreak = streak;
+                const multiplier = streak >= 10 ? 4 : streak >= 5 ? 3 : streak >= 3 ? 2 : 1;
+                const timeBonus = getTimeBonus(qid);
+                const points = (10 * multiplier) + timeBonus;
+                addScore(points, multiplier, timeBonus);
                 correctCount++;
                 answeredQuestions[qid] = 'correct';
-                announceToSR('תשובה נכונה! +10 נקודות');
+                if (streak === 3) showAchievement('🔥 רצף 3!');
+                if (streak === 5) showAchievement('🔥🔥 רצף 5! x3');
+                if (streak === 10) showAchievement('💎 רצף 10! x4');
                 showConfetti(element);
             } else {
                 element.classList.add('wrong');
+                if (streak >= 3) showAchievement('💔 רצף של ' + streak + ' נשבר!');
+                streak = 0;
                 wrongCount++;
                 answeredQuestions[qid] = 'wrong';
-                announceToSR('תשובה שגויה');
+                if (survivalMode) { survivalLives--; updateSurvivalLives(); if (survivalLives <= 0) { showGameOver(); return; } }
             }
 
             updateStats();
@@ -1438,28 +1470,106 @@
             input.parentElement.appendChild(feedback);
 
             if (isCorrect) {
-                addScore(15);
+                streak++;
+                if (streak > bestStreak) bestStreak = streak;
+                const multiplier = streak >= 10 ? 4 : streak >= 5 ? 3 : streak >= 3 ? 2 : 1;
+                addScore(15 * multiplier, multiplier, 0);
                 correctCount++;
                 answeredQuestions[qid] = 'correct';
                 showConfetti(input);
             } else {
+                if (streak >= 3) showAchievement('💔 רצף של ' + streak + ' נשבר!');
+                streak = 0;
                 wrongCount++;
                 answeredQuestions[qid] = 'wrong';
+                if (survivalMode) { survivalLives--; updateSurvivalLives(); if (survivalLives <= 0) { showGameOver(); return; } }
             }
 
             updateStats();
             saveProgress();
         }
 
-        function addScore(points) {
+        function addScore(points, multiplier, timeBonus) {
             score += points;
             document.getElementById('score').textContent = score;
 
+            let text = `+${points}`;
+            if (multiplier > 1) text += ` (x${multiplier})`;
+            if (timeBonus > 0) text += ` ⚡+${timeBonus}`;
+            text += ' נקודות!';
+
             const popup = document.createElement('div');
             popup.className = 'score-popup'; popup.setAttribute('role', 'alert'); popup.setAttribute('aria-live', 'assertive');
-            popup.textContent = `+${points} נקודות!`;
+            popup.textContent = text;
+            if (multiplier >= 3) popup.style.fontSize = '1.8em';
+            if (multiplier >= 4) popup.style.color = '#d4af37';
             document.body.appendChild(popup);
-            setTimeout(() => popup.remove(), 1500);
+            setTimeout(() => popup.remove(), 1800);
+        }
+
+        function getTimeBonus(qid) {
+            const start = questionTimers[qid];
+            if (!start) return 0;
+            const elapsed = (Date.now() - start) / 1000;
+            if (elapsed < 5) return 10;
+            if (elapsed < 10) return 5;
+            if (elapsed < 20) return 2;
+            return 0;
+        }
+
+        function startQuestionTimer(qid) {
+            if (!questionTimers[qid]) questionTimers[qid] = Date.now();
+        }
+
+        function showAchievement(text) {
+            const badge = document.createElement('div');
+            badge.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.9); color:#f7d794; padding:20px 40px; border-radius:16px; font-size:1.6em; font-weight:bold; z-index:100001; text-align:center; border:2px solid #d4af37; animation:achievePop 0.5s ease;';
+            badge.textContent = text;
+            document.body.appendChild(badge);
+            setTimeout(() => { badge.style.opacity = '0'; badge.style.transition = 'opacity 0.5s'; }, 1500);
+            setTimeout(() => badge.remove(), 2000);
+        }
+
+        function toggleSurvival() {
+            survivalMode = !survivalMode;
+            const btn = document.getElementById('survival-btn');
+            const livesEl = document.getElementById('survival-lives');
+            if (survivalMode) {
+                survivalLives = 3;
+                btn.textContent = '💀 הישרדות: פעיל!';
+                btn.style.background = 'linear-gradient(45deg,#e55039,#d63031)';
+                btn.style.color = '#fff';
+                livesEl.style.display = 'block';
+                updateSurvivalLives();
+                showAchievement('💀 מצב הישרדות! 3 חיים');
+            } else {
+                btn.textContent = '💀 מצב הישרדות';
+                btn.style.background = '';
+                btn.style.color = '';
+                livesEl.style.display = 'none';
+            }
+        }
+
+        function updateSurvivalLives() {
+            const el = document.getElementById('survival-lives');
+            if (!el) return;
+            el.textContent = '❤️'.repeat(survivalLives) + '🖤'.repeat(3 - survivalLives);
+        }
+
+        function showGameOver() {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:100002; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff;';
+            overlay.innerHTML = `
+                <div style="text-align:center;">
+                    <h1 style="font-size:3em; margin-bottom:10px;">💀 Game Over!</h1>
+                    <p style="font-size:1.5em; color:#f7d794; margin-bottom:5px;">ניקוד סופי: ${score}</p>
+                    <p style="font-size:1.2em; color:#82ccdd; margin-bottom:5px;">תשובות נכונות: ${correctCount}</p>
+                    <p style="font-size:1.2em; color:#f0932b; margin-bottom:20px;">שיא רצף: ${bestStreak} 🔥</p>
+                    <button onclick="this.parentElement.parentElement.remove(); survivalLives=3; updateSurvivalLives();" style="padding:15px 40px; font-size:1.2em; background:linear-gradient(45deg,#78e08f,#38ada9); color:#fff; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">🔄 נסה שוב</button>
+                    <br><br>
+                    <button onclick="this.parentElement.parentElement.remove(); survivalMode=false; document.getElementById('survival-btn').textContent='💀 מצב הישרדות'; document.getElementById('survival-btn').style.background=''; document.getElementById('survival-lives').style.display='none';" style="padding:10px 30px; font-size:1em; background:transparent; color:#82ccdd; border:1px solid #82ccdd; border-radius:12px; cursor:pointer;">חזרה למצב רגיל</button>
+                </div>`;
+            document.body.appendChild(overlay);
         }
 
         function showConfetti(element) {
@@ -1488,6 +1598,17 @@
 
             const progress = (total / questions.length) * 100;
             document.getElementById('progress-bar').style.width = progress + '%';
+
+            // Streak display
+            const streakEl = document.getElementById('streak-display');
+            if (streakEl) {
+                streakEl.textContent = streak + ' 🔥';
+                streakEl.style.color = streak >= 10 ? '#d4af37' : streak >= 5 ? '#e55039' : streak >= 3 ? '#f0932b' : '#82ccdd';
+                if (streak >= 3) streakEl.style.fontSize = '1.3em';
+                else streakEl.style.fontSize = '';
+            }
+            const bestEl = document.getElementById('best-streak');
+            if (bestEl) bestEl.textContent = bestStreak + ' ⭐';
         }
 
         function filterQuestions(filter, element) {
