@@ -2023,6 +2023,8 @@
         // === Admin Panel with Tabs ===
 
         let adminTab = 'pending'; // 'pending', 'reports', 'edit'
+        let adminEditPage = 0;
+        const ADMIN_PAGE_SIZE = 50;
 
         function renderAdminPanel() {
             const container = document.getElementById('pending-container');
@@ -2036,7 +2038,7 @@
             tabs.innerHTML = `
                 <button role="tab" aria-selected="${adminTab === 'pending'}" tabindex="${adminTab === 'pending' ? '0' : '-1'}" class="admin-tab ${adminTab === 'pending' ? 'active' : ''}" onclick="switchAdminTab('pending')">📩 שאלות ממתינות (${pendingQuestions.length})</button>
                 <button role="tab" aria-selected="${adminTab === 'reports'}" tabindex="${adminTab === 'reports' ? '0' : '-1'}" class="admin-tab ${adminTab === 'reports' ? 'active' : ''}" onclick="switchAdminTab('reports')">⚠️ דיווחי טעויות (${errorReports.length})</button>
-                <button role="tab" aria-selected="${adminTab === 'edit'}" tabindex="${adminTab === 'edit' ? '0' : '-1'}" class="admin-tab ${adminTab === 'edit' ? 'active' : ''}" onclick="switchAdminTab('edit')">✏️ תיקון תשובות</button>
+                <button role="tab" aria-selected="${adminTab === 'edit'}" tabindex="${adminTab === 'edit' ? '0' : '-1'}" class="admin-tab ${adminTab === 'edit' ? 'active' : ''}" onclick="switchAdminTab('edit')">✏️ ניהול שאלות (${questions.length})</button>
             `;
             container.appendChild(tabs);
 
@@ -2138,10 +2140,34 @@
             let filtered = questions;
             if (term) {
                 filtered = questions.filter(q => q.text.toLowerCase().includes(term) || q.id.toString().includes(term));
+                adminEditPage = 0;
             }
 
-            // Show max 20 to avoid lag
-            filtered.slice(0, 20).forEach(q => {
+            const totalPages = Math.ceil(filtered.length / ADMIN_PAGE_SIZE) || 1;
+            if (adminEditPage >= totalPages) adminEditPage = totalPages - 1;
+
+            const start = adminEditPage * ADMIN_PAGE_SIZE;
+            const pageItems = filtered.slice(start, start + ADMIN_PAGE_SIZE);
+
+            // Pagination header
+            const paginationHTML = filtered.length > ADMIN_PAGE_SIZE ?
+                '<button class="admin-tab" onclick="adminEditPrev()" ' + (adminEditPage === 0 ? 'disabled style="opacity:0.4;cursor:default"' : '') + '>\u25c0 הקודם</button>' +
+                '<span style="color:#f7d794;">עמוד ' + (adminEditPage + 1) + ' מתוך ' + totalPages + ' (' + filtered.length + ' שאלות)</span>' +
+                '<button class="admin-tab" onclick="adminEditNext()" ' + (adminEditPage >= totalPages - 1 ? 'disabled style="opacity:0.4;cursor:default"' : '') + '>הבא \u25b6</button>' : '';
+
+            if (paginationHTML) {
+                const pTop = document.createElement('div');
+                pTop.style.cssText = 'display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:15px;flex-wrap:wrap;';
+                pTop.innerHTML = paginationHTML;
+                listDiv.appendChild(pTop);
+            } else if (filtered.length > 0) {
+                const countDiv = document.createElement('div');
+                countDiv.style.cssText = 'text-align:center;color:#82ccdd;margin-bottom:15px;';
+                countDiv.textContent = filtered.length + ' שאלות';
+                listDiv.appendChild(countDiv);
+            }
+
+            pageItems.forEach(q => {
                 const card = document.createElement('div');
                 card.className = 'pending-card';
                 card.id = 'admin-q-' + q.id;
@@ -2150,7 +2176,10 @@
                 if (q.isOpen) {
                     editHTML = '<div style="margin: 10px 0;"><label style="color: #82ccdd;">תשובה נכונה:</label>' +
                         '<input type="text" class="form-input" id="admin-open-' + q.id + '" aria-label="תשובה נכונה לשאלה ' + q.id + '" value="' + (q.openAnswer || '') + '" style="margin-top: 5px;"></div>' +
-                        '<button class="btn-approve" onclick="saveOpenAnswer(' + q.id + ')">💾 שמור</button>';
+                        '<div class="pending-actions">' +
+                        '<button class="btn-approve" onclick="saveOpenAnswer(' + q.id + ')">💾 שמור</button>' +
+                        '<button class="btn-reject" onclick="deleteQuestion(' + q.id + ')">🗑️ מחק</button>' +
+                        '</div>';
                 } else {
                     const letters = ['א', 'ב', 'ג', 'ד'];
                     editHTML = '<div class="admin-edit-options">';
@@ -2162,7 +2191,10 @@
                             '</div>';
                     });
                     editHTML += '</div>';
-                    editHTML += '<button class="btn-approve" onclick="saveCorrectAnswer(' + q.id + ')" style="margin-top: 10px;">💾 שמור תשובה נכונה</button>';
+                    editHTML += '<div class="pending-actions" style="margin-top:10px;">' +
+                        '<button class="btn-approve" onclick="saveCorrectAnswer(' + q.id + ')">💾 שמור תשובה</button>' +
+                        '<button class="btn-reject" onclick="deleteQuestion(' + q.id + ')">🗑️ מחק</button>' +
+                        '</div>';
                 }
 
                 card.innerHTML = '<span class="question-number">שאלה ' + q.id + '</span>' +
@@ -2172,13 +2204,62 @@
                 listDiv.appendChild(card);
             });
 
-            if (filtered.length > 20) {
-                listDiv.innerHTML += '<div style="text-align: center; color: #82ccdd; padding: 15px;">מציג 20 מתוך ' + filtered.length + ' — צמצם את החיפוש</div>';
+            // Pagination bottom
+            if (paginationHTML) {
+                const pBot = document.createElement('div');
+                pBot.style.cssText = 'display:flex;justify-content:center;align-items:center;gap:10px;margin-top:15px;flex-wrap:wrap;';
+                pBot.innerHTML = paginationHTML;
+                listDiv.appendChild(pBot);
             }
 
             if (filtered.length === 0) {
                 listDiv.innerHTML = '<div class="empty-admin">לא נמצאו שאלות</div>';
             }
+        }
+
+        function adminEditPrev() {
+            if (adminEditPage > 0) { adminEditPage--; filterAdminEdit(); }
+        }
+
+        function adminEditNext() {
+            const term = document.getElementById('admin-search') ? document.getElementById('admin-search').value.trim().toLowerCase() : '';
+            let filtered = questions;
+            if (term) filtered = questions.filter(q => q.text.toLowerCase().includes(term) || q.id.toString().includes(term));
+            if (adminEditPage < Math.ceil(filtered.length / ADMIN_PAGE_SIZE) - 1) { adminEditPage++; filterAdminEdit(); }
+        }
+
+        function deleteQuestion(qid) {
+            const q = questions.find(qq => qq.id === qid);
+            if (!q) return;
+            if (!confirm('האם למחוק את שאלה ' + qid + '?\n"' + q.text.substring(0, 80) + '..."')) return;
+
+            let deleted = JSON.parse(localStorage.getItem('avitzur_deleted') || '[]');
+            deleted.push(q.text);
+            localStorage.setItem('avitzur_deleted', JSON.stringify(deleted));
+
+            questions = questions.filter(qq => qq.id !== qid);
+            questions.forEach((qq, i) => { qq.id = i + 1; });
+            updateQuestionCount();
+            renderAll();
+            renderAdminPanel();
+        }
+
+        function applyDeletions() {
+            try {
+                const deleted = JSON.parse(localStorage.getItem('avitzur_deleted') || '[]');
+                if (deleted.length > 0) {
+                    questions = questions.filter(q => !deleted.includes(q.text));
+                }
+            } catch(e) {}
+        }
+
+        function updateQuestionCount() {
+            var count = questions.length;
+            document.title = '\u05DE\u05E7\u05D1\u05E5 ' + count + ' \u05E9\u05D0\u05DC\u05D5\u05EA \u05D1\u05EA\u05E0"\u05DA - \u05D7\u05D9\u05D3\u05D5\u05DF \u05D4\u05EA\u05E0"\u05DA';
+            var h1El = document.querySelector('header h1');
+            if (h1El) h1El.innerHTML = '\uD83D\uDCDA \u05DE\u05E7\u05D1\u05E5 ' + count + ' \u05E9\u05D0\u05DC\u05D5\u05EA \u05D1\u05EA\u05E0"\u05DA';
+            var payTitleEl = document.querySelector('.payment-card h2');
+            if (payTitleEl) payTitleEl.innerHTML = '\uD83D\uDCDA \u05DE\u05E7\u05D1\u05E5 ' + count + ' \u05E9\u05D0\u05DC\u05D5\u05EA \u05D1\u05EA\u05E0"\u05DA - \u05D2\u05D9\u05E9\u05D4 \u05DE\u05DC\u05D0\u05D4';
         }
 
         function saveCorrectAnswer(qid) {
@@ -2389,7 +2470,8 @@
                 }
             }
 
-            // Renumber questions sequentially 1..N
+            // Remove previously deleted questions, then renumber sequentially
+            applyDeletions();
             questions.forEach((q, i) => { q.id = i + 1; });
 
             // Update title + header with actual count
