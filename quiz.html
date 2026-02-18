@@ -2470,6 +2470,18 @@
                 }
             }
 
+            // Deduplicate: file has "שאלון" + "תשובות" sections with same questions.
+            // Keep last occurrence of each question (the "תשובות" copy with marked answers).
+            const deduped = new Map();
+            questions.forEach(q => {
+                const key = q.text.trim().substring(0, 50);
+                const existing = deduped.get(key);
+                if (!existing || q.correctIndex !== null) {
+                    deduped.set(key, q);
+                }
+            });
+            questions = Array.from(deduped.values());
+
             // Remove previously deleted questions, then renumber sequentially
             applyDeletions();
             questions.forEach((q, i) => { q.id = i + 1; });
