@@ -551,29 +551,48 @@
 
             const dateStr = selectedDate.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-            const message = `🎯 *פגישת זום חדשה - חידון התנ״ך*
+            const btn = event.target.querySelector('.submit-btn');
+            btn.disabled = true;
+            btn.textContent = '⏳ שולח...';
 
-👤 *שם:* ${name}
-📱 *טלפון:* ${phone}
-📧 *אימייל:* ${email}
+            const formData = new FormData();
+            formData.append('_subject', '🎯 פגישת זום חדשה - חידון התנ״ך');
+            formData.append('_captcha', 'false');
+            formData.append('_template', 'table');
+            formData.append('שם', name);
+            formData.append('טלפון', phone);
+            formData.append('אימייל', email);
+            formData.append('תאריך', dateStr);
+            formData.append('שעה', selectedTime);
+            formData.append('משך', '45 דקות');
+            formData.append('הערות', notes || 'אין הערות');
 
-📅 *תאריך:* ${dateStr}
-⏰ *שעה:* ${selectedTime}
-⏱️ *משך:* 45 דקות
-
-💰 *מחיר:* ₪97 (כולל הטיפים)
-
-📝 *הערות:*
-${notes || 'אין הערות'}
-
----
-נשלח מאתר חידון התנ״ך`;
-
-            const whatsappUrl = `https://wa.me/972526953500?text=${encodeURIComponent(message)}`;
-
-            window.open(whatsappUrl, '_blank');
-
-            alert('הפרטים נשלחו לוואטסאפ!\nנחזור אליך בהקדם לאישור הפגישה.');
+            fetch('https://formsubmit.co/ajax/shemesh613@gmail.com', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('booking-form').innerHTML = `
+                        <div style="text-align:center; padding:40px;">
+                            <div style="font-size:4rem; margin-bottom:20px;">✅</div>
+                            <h3 style="color:#22c55e; font-size:1.8rem; margin-bottom:15px;">הפגישה נקבעה בהצלחה!</h3>
+                            <p style="color:#1a0a2e; font-size:1.1rem; line-height:1.8;">
+                                <strong>${dateStr}</strong> בשעה <strong>${selectedTime}</strong><br>
+                                נחזור אליך בהקדם עם קישור לזום.<br>
+                                תודה רבה! 🙏
+                            </p>
+                        </div>`;
+                } else {
+                    throw new Error('fail');
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.textContent = '📞 קבע פגישת זום • ₪97';
+                alert('שגיאה בשליחה. נסה שוב או שלח הודעה ל-052-6953500');
+            });
         }
 
         function prevMonth() {
