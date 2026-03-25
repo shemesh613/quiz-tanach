@@ -1384,7 +1384,7 @@
                     <div class="question-text">${q.text}</div>
                     ${optionsHTML}
                     <a href="#answer-${q.id}" class="answer-link">📖 לתשובה</a>
-                    ${q.source ? `<div class="source-text">${q.source}</div>` : ''}
+                    ${(q.source && wasAnswered) ? `<div class="source-text">${q.source}</div>` : ''}
                     <button class="report-btn" onclick="toggleReport(${q.id})">⚠️ דיווח על טעות</button>
                     <div class="report-form" id="report-form-${q.id}">
                         <input type="text" class="report-input" id="report-text-${q.id}" aria-label="דיווח על טעות בשאלה ${q.id}" placeholder="מה השגיאה? (לדוגמה: התשובה הנכונה היא ב)">
