@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ניהול דיווחי באגים</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Heebo',sans-serif;background:linear-gradient(135deg,#1a0a2e,#16213e);min-height:100vh;color:#eee}.c{max-width:900px;margin:0 auto;padding:80px 20px 40px}h1{text-align:center;color:#d4af37;margin-bottom:8px;font-size:2rem}.sub{text-align:center;color:rgba(255,255,255,.5);margin-bottom:20px}.stats{display:flex;gap:12px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}.stat{background:rgba(255,255,255,.06);padding:12px 24px;border-radius:12px;text-align:center}.stat .num{font-size:1.8rem;font-weight:700;color:#d4af37}.stat .lbl{font-size:.8rem;color:rgba(255,255,255,.5)}.actions{text-align:center;margin-bottom:20px}.btn{padding:10px 24px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin:4px}.btn:hover{transform:translateY(-2px)}.btn-refresh{background:linear-gradient(45deg,#d4af37,#f7d794);color:#1a0a2e}.btn-clear{background:#e55039;color:#fff;font-size:.85rem}.list{display:flex;flex-direction:column;gap:16px}.bug{background:rgba(255,255,255,.06);border-radius:14px;border:2px solid rgba(212,175,55,.15);overflow:hidden}.bug.done{opacity:.5;border-color:#78e08f}.bug-hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(212,175,55,.08)}.bug-hdr .info{color:#d4af37;font-size:.85rem}.bug-hdr .name{color:#78e08f;font-weight:700}.bug-body{padding:16px}.bug-note{font-size:1.05rem;line-height:1.6;margin-bottom:10px}.bug-actions{display:flex;gap:8px;margin-top:10px}.bug-actions button{padding:6px 14px;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem}.bd{background:#78e08f;color:#1a0a2e;font-weight:600}.bl{background:rgba(229,80,57,.3);color:#e55039}.empty{text-align:center;padding:60px;color:rgba(255,255,255,.3);font-size:1.2rem}
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="c">
+<h1>ניהול דיווחי באגים</h1>
+<p class="sub">כל הדיווחים מהבודקים</p>
+<div class="stats" id="stats"></div>
+<div class="actions"><button class="btn btn-refresh" onclick="load()">רענן</button><button class="btn btn-clear" onclick="clearAll()">נקה הכל</button></div>
+<div class="list" id="list"><div class="empty">טוען...</div></div>
+</div>
+<script src="shared.js"></script>
+<script>
+initParticles(30);
+var API='https://jsonblob.com/api/jsonBlob/019d29da-02ff-77f8-b4e2-289fc10a69ed',R=[];
+function load(){document.getElementById('list').innerHTML='<div class="empty">טוען...</div>';
+fetch(API).then(function(r){return r.json()}).then(function(d){R=d.reports||[];render()}).catch(function(){document.getElementById('list').innerHTML='<div class="empty">שגיאה</div>'})}
+function render(){var l=document.getElementById('list'),s=document.getElementById('stats'),t=R.length,dn=R.filter(function(r){return r.status==='done'}).length,op=t-dn;
+s.innerHTML='<div class="stat"><div class="num">'+t+'</div><div class="lbl">סה"כ</div></div><div class="stat"><div class="num" style="color:#e55039">'+op+'</div><div class="lbl">פתוח</div></div><div class="stat"><div class="num" style="color:#78e08f">'+dn+'</div><div class="lbl">טופל</div></div>';
+if(!t){l.innerHTML='<div class="empty">אין דיווחים</div>';return}l.innerHTML='';
+R.slice().reverse().forEach(function(r,idx){var i=R.length-1-idx,d=document.createElement('div');d.className='bug'+(r.status==='done'?' done':'');
+d.innerHTML='<div class="bug-hdr"><span class="info">#'+(i+1)+' '+( r.time||'')+'</span><span class="name">'+(r.name||'')+'</span></div><div class="bug-body"><div class="bug-note">'+(r.note||'')+'</div><div class="bug-actions"><button class="bd" onclick="mk('+i+')">'+(r.status==='done'?'טופל':'סמן כטופל')+'</button><button class="bl" onclick="dl('+i+')">מחק</button></div></div>';
+l.appendChild(d)})}
+function mk(i){R[i].status=R[i].status==='done'?'open':'done';sv()}
+function dl(i){if(!confirm('למחוק?'))return;R.splice(i,1);sv()}
+function clearAll(){if(!confirm('למחוק הכל?'))return;R=[];sv()}
+function sv(){fetch(API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({reports:R})}).then(function(){render()}).catch(function(){alert('שגיאה')})}
+load();
+</script>
+</body>
+</html>
