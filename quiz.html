@@ -1195,7 +1195,7 @@
                 }
 
                 // Regular option (not Hebrew letter format)
-                if (inOptions && !current.isOpen && trimmed.length < 150 && !trimmed.match(/^\d+[.)]/)) {
+                if (inOptions && !current.isOpen && trimmed.length < 150 && !(trimmed.match(/^\d+[.)]/) && /[֐-׿]/.test(trimmed))) {
                     const isCorrect = line.startsWith(' ') || line.startsWith('\t');
                     if (isCorrect && current.correctIndex === null) {
                         current.correctIndex = current.options.length;
