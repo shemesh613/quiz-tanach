@@ -1181,7 +1181,7 @@
                 }
 
                 // Skip headers and error markers
-                if (trimmed.includes('שאלון') || trimmed.includes('טעות')) continue;
+                if (trimmed.includes('שאלון') || trimmed.includes('שאלות') || trimmed.includes('תשובות') || trimmed.includes('טעות')) continue;
 
                 // For open questions, check for answer
                 if (current.isOpen && !current.openAnswer && trimmed.length < 100) {
