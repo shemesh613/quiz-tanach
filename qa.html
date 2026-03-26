@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐛 דיווח באגים — צילומי מסך</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #1a1a2e; color: #eee; padding: 20px; }
+        h1 { text-align: center; color: #d4af37; margin-bottom: 10px; font-size: 1.8rem; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+        .controls { text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 12px 28px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; font-family: inherit; }
+        .btn-save { background: linear-gradient(45deg, #78e08f, #38ada9); color: #fff; }
+        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(120,224,143,0.4); }
+        .btn-load { background: linear-gradient(45deg, #d4af37, #f7d794); color: #1a1a2e; }
+        .btn-load:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212,175,55,0.4); }
+        .btn-clear { background: #e55039; color: #fff; }
+        .counter { text-align: center; color: #78e08f; margin-bottom: 20px; font-size: 1.1rem; }
+        .card { background: #16213e; border-radius: 16px; margin-bottom: 24px; overflow: hidden; border: 2px solid transparent; transition: border-color 0.3s; }
+        .card.has-note { border-color: #d4af37; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(212,175,55,0.1); }
+        .card-filename { color: #d4af37; font-size: 0.85rem; direction: ltr; }
+        .card-badge { background: #e55039; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; display: none; }
+        .card.has-note .card-badge { display: inline-block; background: #78e08f; color: #1a1a2e; }
+        .card-body { display: flex; gap: 16px; padding: 16px; align-items: flex-start; }
+        .card-img { width: 45%; max-height: 400px; object-fit: contain; border-radius: 8px; cursor: pointer; transition: transform 0.3s; background: #0a0a1a; }
+        .card-img:hover { transform: scale(1.02); }
+        .card-input { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .card-input textarea { width: 100%; min-height: 120px; padding: 12px; border: 2px solid #2a2a4a; border-radius: 10px; background: #0f3460; color: #eee; font-size: 1rem; font-family: inherit; resize: vertical; direction: rtl; }
+        .card-input textarea:focus { outline: none; border-color: #d4af37; }
+        .card-input textarea::placeholder { color: #556; }
+        .status { text-align: center; color: #78e08f; padding: 10px; font-size: 1.1rem; display: none; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; cursor: pointer; }
+        .modal.show { display: flex; }
+        .modal img { max-width: 95%; max-height: 95%; object-fit: contain; }
+        @media (max-width: 768px) {
+            .card-body { flex-direction: column; }
+            .card-img { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🐛 דיווח באגים — צילומי מסך</h1>
+    <p class="subtitle">כתוב ליד כל צילום מה הבעיה. לחץ "שמור" כשסיימת.</p>
+
+    <div class="controls">
+        <button class="btn btn-save" onclick="saveNotes()">💾 שמור הערות</button>
+        <button class="btn btn-load" onclick="loadFolder()">📂 טען תיקייה חדשה</button>
+        <button class="btn btn-clear" onclick="clearAll()">🗑️ נקה הכל</button>
+    </div>
+    <div class="counter" id="counter"></div>
+    <div class="status" id="status"></div>
+
+    <div id="cards"></div>
+
+    <div class="modal" id="modal" onclick="this.classList.remove('show')">
+        <img id="modal-img">
+    </div>
+
+    <script>
+        const SAVE_KEY = 'bug-reporter-notes';
+        let images = [];
+
+        // Load screenshots from default folder
+        async function init() {
+            const defaultImages = [
+                'צילום מסך 2026-03-26 110009.png',
+                'צילום מסך 2026-03-26 110013.png',
+                'צילום מסך 2026-03-26 110928.png',
+                'צילום מסך 2026-03-26 112132.png',
+                'צילום מסך 2026-03-26 113003.png',
+                'צילום מסך 2026-03-26 113735.png',
+                'צילום מסך 2026-03-26 113752.png',
+                'צילום מסך 2026-03-26 113840.png',
+                'צילום מסך 2026-03-26 113905.png',
+                'צילום מסך 2026-03-26 114138.png',
+                'צילום מסך 2026-03-26 114409.png',
+                'צילום מסך 2026-03-26 114640.png',
+            ];
+
+            // Try loading via file input if available, otherwise use hardcoded
+            const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+            renderCards(defaultImages, saved, 'file:///C:/Users/user/Pictures/Screenshots/');
+        }
+
+        async function loadFolder() {
+            try {
+                const dirHandle = await window.showDirectoryPicker();
+                const files = [];
+                const objectURLs = {};
+                for await (const entry of dirHandle.values()) {
+                    if (entry.kind === 'file' && /\.(png|jpg|jpeg|gif|webp)$/i.test(entry.name)) {
+                        const file = await entry.getFile();
+                        files.push(entry.name);
+                        objectURLs[entry.name] = URL.createObjectURL(file);
+                    }
+                }
+                files.sort();
+                const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+                renderCards(files, saved, '', objectURLs);
+            } catch(e) {
+                if (e.name !== 'AbortError') alert('שגיאה בטעינת תיקייה');
+            }
+        }
+
+        function renderCards(fileNames, savedNotes, basePath, objectURLs) {
+            images = fileNames;
+            const container = document.getElementById('cards');
+            container.innerHTML = '';
+
+            fileNames.forEach((name, i) => {
+                const note = savedNotes[name] || '';
+                const card = document.createElement('div');
+                card.className = 'card' + (note ? ' has-note' : '');
+                card.id = `card-${i}`;
+
+                const src = objectURLs ? (objectURLs[name] || '') : (basePath + encodeURIComponent(name));
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-filename">${name}</span>
+                        <span class="card-badge">${note ? '✅ יש הערה' : ''}</span>
+                    </div>
+                    <div class="card-body">
+                        <img class="card-img" src="${src}" alt="${name}" onclick="showModal(this.src)" loading="lazy">
+                        <div class="card-input">
+                            <textarea id="note-${i}" data-filename="${name}" placeholder="מה הבעיה בצילום הזה?"
+                                oninput="updateCard(${i})">${note}</textarea>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            updateCounter();
+        }
+
+        function updateCard(i) {
+            const textarea = document.getElementById(`note-${i}`);
+            const card = document.getElementById(`card-${i}`);
+            const hasText = textarea.value.trim().length > 0;
+            card.className = 'card' + (hasText ? ' has-note' : '');
+            card.querySelector('.card-badge').textContent = hasText ? '✅ יש הערה' : '';
+            card.querySelector('.card-badge').style.display = hasText ? 'inline-block' : 'none';
+            updateCounter();
+            // Auto-save
+            autoSave();
+        }
+
+        let saveTimeout;
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                const notes = collectNotes();
+                localStorage.setItem(SAVE_KEY, JSON.stringify(notes));
+            }, 500);
+        }
+
+        function collectNotes() {
+            const notes = {};
+            document.querySelectorAll('textarea[data-filename]').forEach(ta => {
+                if (ta.value.trim()) {
+                    notes[ta.dataset.filename] = ta.value.trim();
+                }
+            });
+            return notes;
+        }
+
+        function saveNotes() {
+            const notes = collectNotes();
+            localStorage.setItem(SAVE_KEY, JSON.stringify(notes));
+
+            // Also save to file
+            const output = Object.entries(notes).map(([file, note]) =>
+                `📸 ${file}\n📝 ${note}\n${'─'.repeat(50)}`
+            ).join('\n\n');
+
+            const blob = new Blob(['\ufeff' + output], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'bug-notes.txt';
+            a.click();
+
+            showStatus(`💾 נשמרו ${Object.keys(notes).length} הערות`);
+        }
+
+        function clearAll() {
+            if (!confirm('למחוק את כל ההערות?')) return;
+            document.querySelectorAll('textarea').forEach(ta => { ta.value = ''; });
+            document.querySelectorAll('.card').forEach(c => { c.className = 'card'; });
+            document.querySelectorAll('.card-badge').forEach(b => { b.style.display = 'none'; });
+            localStorage.removeItem(SAVE_KEY);
+            updateCounter();
+            showStatus('🗑️ כל ההערות נמחקו');
+        }
+
+        function updateCounter() {
+            const total = document.querySelectorAll('textarea').length;
+            const filled = document.querySelectorAll('.card.has-note').length;
+            document.getElementById('counter').textContent = `${filled} / ${total} צילומים עם הערות`;
+        }
+
+        function showModal(src) {
+            document.getElementById('modal-img').src = src;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function showStatus(msg) {
+            const el = document.getElementById('status');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
