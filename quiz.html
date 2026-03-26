@@ -2726,7 +2726,7 @@
 <script>
 (function(){var B=[],SK="quiz-bugs",pnl=document.getElementById("bP");
 try{B=JSON.parse(localStorage.getItem(SK)||"[]");if(B.length)ren();}catch(e){}
-var nmE=document.getElementById("bNm");nmE.value=localStorage.getItem("b-nm")||"";nmE.oninput=function(e){localStorage.setItem("b-nm",e.target.value)};
+
 document.addEventListener("paste",function(e){var it=e.clipboardData&&e.clipboardData.items;if(!it)return;for(var i=0;i<it.length;i++){if(it[i].type.indexOf("image/")===0){e.preventDefault();var f=it[i].getAsFile(),r=new FileReader();r.onload=function(ev){var im=new Image();im.onload=function(){var cv=document.createElement("canvas"),w=im.width,h=im.height;if(w>900){h=h*900/w;w=900}cv.width=w;cv.height=h;cv.getContext("2d").drawImage(im,0,0,w,h);B.push({img:cv.toDataURL("image/jpeg",.7),note:"",time:new Date().toLocaleString("he-IL")});sv();ren();if(!pnl.classList.contains("open"))pnl.classList.add("open");toast("\ud83d\udcf8 \u05e6\u05d9\u05dc\u05d5\u05dd \u05e0\u05e7\u05dc\u05d8!")};im.src=ev.target.result};r.readAsDataURL(f);return}}});
 window.toggleBP=function(){pnl.classList.toggle("open")};
 function ren(){var bd=document.getElementById("bB"),ht=document.getElementById("bH");if(!B.length){bd.innerHTML="";bd.appendChild(ht);ht.style.display="block";uN();return}ht.style.display="none";bd.innerHTML="";B.forEach(function(b,i){var d=document.createElement("div");d.className="bug-it";var s="<img src=\""+b.img+"\">";s+="<div class=\"bug-br\"><span>#"+(i+1)+"</span><button onclick=\"dB("+i+")\">X</button></div>";s+="<textarea placeholder=\"\u05de\u05d4 \u05d4\u05d1\u05e2\u05d9\u05d4?\" oninput=\"uB("+i+",this.value)\">"+(b.note||"")+"</textarea>";d.innerHTML=s;bd.appendChild(d)});uN()}
