@@ -1487,7 +1487,7 @@
             if (!userAnswer) return;
 
             const correctAnswer = (question.openAnswer || '').toLowerCase();
-            const isCorrect = correctAnswer.includes(userAnswer) || userAnswer.includes(correctAnswer);
+            const isCorrect = correctAnswer.length > 0 && (correctAnswer.includes(userAnswer) || userAnswer.includes(correctAnswer));
 
             input.disabled = true;
             input.style.borderColor = isCorrect ? '#78e08f' : '#e55039';
