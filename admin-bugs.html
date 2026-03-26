@@ -20,18 +20,18 @@
 <script src="shared.js"></script>
 <script>
 initParticles(30);
-var API='https://jsonblob.com/api/jsonBlob/019d29da-02ff-77f8-b4e2-289fc10a69ed',R=[];
+var API='https://aid-connect-2059d-default-rtdb.europe-west1.firebasedatabase.app/bug-reports.json',R=[];
 function load(){document.getElementById('list').innerHTML='<div class="empty">טוען...</div>';
-fetch(API).then(function(r){return r.json()}).then(function(d){R=d.reports||[];render()}).catch(function(){document.getElementById('list').innerHTML='<div class="empty">שגיאה</div>'})}
+fetch(API).then(function(r){return r.json()}).then(function(d){R=[];if(d){Object.keys(d).forEach(function(k){var v=d[k];v._key=k;R.push(v)})}render()}).catch(function(){document.getElementById('list').innerHTML='<div class="empty">שגיאה</div>'})}
 function render(){var l=document.getElementById('list'),s=document.getElementById('stats'),t=R.length,dn=R.filter(function(r){return r.status==='done'}).length,op=t-dn;
 s.innerHTML='<div class="stat"><div class="num">'+t+'</div><div class="lbl">סה"כ</div></div><div class="stat"><div class="num" style="color:#e55039">'+op+'</div><div class="lbl">פתוח</div></div><div class="stat"><div class="num" style="color:#78e08f">'+dn+'</div><div class="lbl">טופל</div></div>';
 if(!t){l.innerHTML='<div class="empty">אין דיווחים</div>';return}l.innerHTML='';
 R.slice().reverse().forEach(function(r,idx){var i=R.length-1-idx,d=document.createElement('div');d.className='bug'+(r.status==='done'?' done':'');
 d.innerHTML='<div class="bug-hdr"><span class="info">#'+(i+1)+' '+( r.time||'')+'</span><span class="name">'+(r.name||'')+'</span></div><div class="bug-body"><div class="bug-note">'+(r.note||'')+'</div><div class="bug-actions"><button class="bd" onclick="mk('+i+')">'+(r.status==='done'?'טופל':'סמן כטופל')+'</button><button class="bl" onclick="dl('+i+')">מחק</button></div></div>';
 l.appendChild(d)})}
-function mk(i){R[i].status=R[i].status==='done'?'open':'done';sv()}
-function dl(i){if(!confirm('למחוק?'))return;R.splice(i,1);sv()}
-function clearAll(){if(!confirm('למחוק הכל?'))return;R=[];sv()}
+function mk(i){var k=R[i]._key;var s=R[i].status==='done'?'open':'done';fetch(API.replace('.json','/'+k+'/status.json'),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(s)}).then(function(){load()}).catch(function(){alert('err')})}
+function dl(i){if(!confirm('למחוק?'))return;var k=R[i]._key;fetch(API.replace('.json','/'+k+'.json'),{method:'DELETE'}).then(function(){load()}).catch(function(){alert('err')})}
+function clearAll(){if(!confirm('למחוק הכל?'))return;fetch(API,{method:'DELETE'}).then(function(){R=[];render()}).catch(function(){alert('err')})}
 function sv(){fetch(API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({reports:R})}).then(function(){render()}).catch(function(){alert('שגיאה')})}
 load();
 </script>

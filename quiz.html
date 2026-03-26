@@ -2738,17 +2738,10 @@ window.sendB=function(){
 var wn=B.filter(function(b){return b.note.trim()});
 if(!wn.length){alert("כתוב הערה");return}
 var nm=(document.getElementById("player-name-input")||{}).value||"בודק";
-// Save to cloud
-fetch("https://jsonblob.com/api/jsonBlob/019d29da-02ff-77f8-b4e2-289fc10a69ed").then(function(r){return r.json()}).then(function(d){
-var reps=d.reports||[];
-wn.forEach(function(b){reps.push({time:b.time,name:nm,note:b.note,img:b.img.substring(0,200)})});
-return fetch("https://jsonblob.com/api/jsonBlob/019d29da-02ff-77f8-b4e2-289fc10a69ed",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({reports:reps})});
-}).then(function(){toast("✅ נשלח!");B=[];sv();ren();pnl.classList.remove("open")}).catch(function(){
-// Fallback to email
-var fd=new FormData();fd.append("_subject","bug - "+nm);fd.append("_captcha","false");fd.append("_template","box");fd.append("name",nm);
-wn.forEach(function(b,i){fd.append("bug"+(i+1),b.note)});
-fetch("https://formsubmit.co/ajax/shemesh613@gmail.com",{method:"POST",body:fd}).then(function(){toast("✅ נשלח!");B=[];sv();ren();pnl.classList.remove("open")}).catch(function(){alert("error")});
-});return;
+var promises=wn.map(function(b){
+return fetch("https://aid-connect-2059d-default-rtdb.europe-west1.firebasedatabase.app/bug-reports.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({time:b.time,name:nm,note:b.note,img:b.img.substring(0,500)})});
+});
+Promise.all(promises).then(function(){toast("✅ נשלח!");B=[];sv();ren();pnl.classList.remove("open")}).catch(function(){alert("error")});};
 uN()})();
 </script>
 </body>
