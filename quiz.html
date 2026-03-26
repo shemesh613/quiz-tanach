@@ -1994,6 +1994,7 @@
 
         function saveErrorReports() {
             localStorage.setItem('avitzur_reports', JSON.stringify(errorReports));
+            var _last=errorReports[errorReports.length-1];if(_last)fetch('https://aid-connect-2059d-default-rtdb.europe-west1.firebasedatabase.app/bug-reports.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_last)}).catch(function(){});
             updateAdminBadge();
         }
 
