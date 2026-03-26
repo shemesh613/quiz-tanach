@@ -1118,7 +1118,7 @@
                 // Check for question start (number followed by . or ))
                 const qMatch = trimmed.match(/^\*?\s*(\d+)\s*[.)]\s*(.+)/);
 
-                if (qMatch) {
+                if (qMatch && /[֐-׿]/.test(qMatch[2])) {
                     if (current && current.text) {
                         parsed.push(current);
                     }
