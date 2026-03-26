@@ -2459,7 +2459,7 @@
             // Fallback: try fetch (works on HTTP server)
             if (questions.length === 0) {
                 try {
-                    const response = await fetch('questions.txt');
+                    const response = await fetch('questions.txt?v=' + Date.now());
                     if (response.ok) {
                         const text = await response.text();
                         questions = parseQuestions(text);
